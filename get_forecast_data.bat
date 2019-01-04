@@ -12,3 +12,4 @@ REM ### Get Forecast
 START "" %_R_SCRIPT_EXE% "%SA_DATA_DIR%r_forecast\forecast_arima_asc.R"
 ping 127.0.0.1 -n 30
 START "" %_R_SCRIPT_EXE% "%SA_DATA_DIR%r_forecast\forecast_arima_dsc.R"
+exit
