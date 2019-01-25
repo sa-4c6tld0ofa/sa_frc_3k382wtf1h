@@ -39,6 +39,15 @@ forecast_data <- function() {
   startYear <- year(now())
   startMonth <- month(now())
   startDay <- day(now())
+
+  if (nchar(startMonth) < 2 ){
+    startMonth <- paste("0",startMonth, sep = "")
+  }
+  if (nchar(startDay) < 2 ){
+    startDay <- paste("0",startDay, sep = "")
+  }
+
+
   StartDate <- paste(startYear,startMonth,startDay,sep = "-")
   forecastNumbOfdays <- 7
 
