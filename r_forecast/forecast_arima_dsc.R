@@ -106,7 +106,7 @@ forecast_data <- function() {
       }, error=function(e){
         cat("ERROR :",conditionMessage(e), "\n")
       })
-
+      gc()
       i = i-1
   }
 
