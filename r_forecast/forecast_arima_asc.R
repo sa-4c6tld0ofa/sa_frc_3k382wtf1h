@@ -47,7 +47,7 @@ forecast_data <- function() {
     startDay <- paste("0",startDay, sep = "")
   }
 
-  StartDate <- paste(startYear,startMonth,startDay,sep = "-")
+  StartDate <- paste(startYear,startMonth,startDay,sep = "")
   forecastNumbOfdays <- 7
 
   db_usr <- get_sa_usr()
@@ -68,7 +68,7 @@ forecast_data <- function() {
     tryCatch({
       symbol <- symbol_list[i,1]
       uid <- symbol_list[i,2]
-      hd_sql <- paste("SELECT date, price_close FROM price_instruments_data WHERE symbol ='",symbol,"' AND date>= date_sub(", startDate ,", interval 90 day) ORDER BY date ASC", sep = "")
+      hd_sql <- paste("SELECT date, price_close FROM price_instruments_data WHERE symbol ='",symbol,"' AND date>= date_sub(", StartDate ,", interval 90 day) ORDER BY date ASC", sep = "")
       hd_res <- dbSendQuery(con, hd_sql)
       mydata <- fetch(hd_res, n = -1)
 

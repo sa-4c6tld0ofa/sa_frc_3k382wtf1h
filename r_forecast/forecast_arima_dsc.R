@@ -48,7 +48,7 @@ forecast_data <- function() {
   }
 
 
-  StartDate <- paste(startYear,startMonth,startDay,sep = "-")
+  StartDate <- paste(startYear,startMonth,startDay,sep = "")
   forecastNumbOfdays <- 7
 
   db_usr <- get_sa_usr()
