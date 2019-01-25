@@ -36,9 +36,9 @@ forecast_data <- function() {
 
   xf <- paste(rd, "/sa_data_collection/src/", sep = "" )
   csvf <- paste(rd, "/sa_data_collection/r_quantmod/src/", sep = "")
-  startYear <- year(now()-1)
-  startMonth <- 01
-  startDay <- 01
+  startYear <- year(now())
+  startMonth <- month(now())
+  startDay <- day(now())
   StartDate <- paste(startYear,startMonth,startDay,sep = "-")
   forecastNumbOfdays <- 7
 
@@ -60,7 +60,7 @@ forecast_data <- function() {
     tryCatch({
       symbol <- symbol_list[i,1]
       uid <- symbol_list[i,2]
-      hd_sql <- paste("SELECT date, price_close FROM price_instruments_data WHERE symbol ='",symbol,"' AND date>=",StartDate," ORDER BY date ASC", sep = "")
+      hd_sql <- paste("SELECT date, price_close FROM price_instruments_data WHERE symbol ='",symbol,"' AND date>= date_sub(",StartDate,", interval 7 day) ORDER BY date ASC", sep = "")
       hd_res <- dbSendQuery(con, hd_sql)
       mydata <- fetch(hd_res, n = -1)
 
