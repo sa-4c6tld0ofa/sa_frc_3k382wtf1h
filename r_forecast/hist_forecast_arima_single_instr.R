@@ -5,6 +5,7 @@
 
 library(base)
 library(rstudioapi)
+selected_symbol <- "BABA"
 
 get_dir <- function() {
   args <- commandArgs(trailingOnly = FALSE)
@@ -46,8 +47,7 @@ forecast_data <- function() {
   myDbname <- get_sa_db_name()
   myPort <- 3306
   con <- dbConnect(m, user= db_usr, host= myHost, password= db_pwd, dbname= myDbname, port= myPort)
-
-  sql <- "SELECT DISTINCT symbol_list.symbol, symbol_list.uid FROM `price_instruments_data` JOIN symbol_list ON symbol_list.symbol = price_instruments_data.symbol WHERE date >= DATE_SUB(NOW(), INTERVAL 360 DAY) AND target_price = 0 ORDER BY RAND()"
+  sql <- paste("SELECT DISTINCT symbol_list.symbol, symbol_list.uid FROM `price_instruments_data` JOIN symbol_list ON symbol_list.symbol = price_instruments_data.symbol WHERE date >= DATE_SUB(NOW(), INTERVAL 360 DAY) AND target_price = 0 AND price_instruments_data.symbol LIKE '%",selected_symbol,"%' ORDER BY RAND()", sep="")
   res <- dbSendQuery(con, sql)
 
   symbol_list <- fetch(res, n = -1)

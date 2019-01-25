@@ -1,7 +1,7 @@
-# Copyright (c) 2018-present, Taatu Ltd.
-#
-# This source code is licensed under the MIT license found in the
-# LICENSE file in the root directory of this source tree.
+# Copyright (c) Taatu Ltd. - All Rights Reserved
+# Unauthorized copying of this file, via any medium is strictly prohibited
+# Proprietary and confidential
+# Written by Taatu Ltd. Daiviet Huynh <tech@taatu.co>, 2018
 
 library(base)
 library(rstudioapi)
