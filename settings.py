@@ -13,7 +13,10 @@ class sa_path:
         return self.pdir+ "\\sa_pwd"
 
     def get_path_src(self):
-        return self.rdir+"\\src\\"
+        return self.pdir+"\\sa_data_collection\\src\\"
+
+    def get_path_core(self):
+        return self.pdir + "\\sa_data_collection\\core"        
 
 def get_portf_suffix():
     return "PRF:"
