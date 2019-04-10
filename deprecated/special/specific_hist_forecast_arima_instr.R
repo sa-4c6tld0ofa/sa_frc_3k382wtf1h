@@ -36,7 +36,7 @@ forecast_data <- function() {
   source(paste(rd,"/sa_pwd/sa_access.R", sep = "") )
 
   xf <- paste(rd, "/sa_data_collection/src/", sep = "" )
-  csvf <- paste(rd, "/sa_data_collection/r_quantmod/src/", sep = "")
+  #csvf <- paste(rd, "/sa_data_collection/r_quantmod/src/", sep = "")
   forecastNumbOfdays <- 7
 
   db_usr <- get_sa_usr()

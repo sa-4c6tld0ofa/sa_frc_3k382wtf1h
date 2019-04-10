@@ -81,7 +81,7 @@ forecast_data <- function() {
         tryCatch({
           fit <- arima(ts_price,order = c(9,0,10))
           fc  <- forecast(fit, h = forecastNumbOfdays)
-          fn <- paste(uid,"f.csv", sep = "")
+          fn <- paste(uid,"_arima_7d.csv", sep = "")
           f <- paste(xf,fn, sep = "")
           write.csv(fc, file = f)
         },
