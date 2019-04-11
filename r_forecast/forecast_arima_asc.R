@@ -89,7 +89,7 @@ forecast_data <- function() {
               cat("ERROR :",conditionMessage(e), "\n")
               fit <- arima(ts_price,order = c(9,1,10))
               fc  <- forecast(fit, h = forecastNumbOfdays)
-              fn <- paste(uid,"f.csv", sep = "")
+              fn <- paste(uid,"_arima_7d.csv", sep = "")
               f <- paste(xf,fn, sep = "")
               write.csv(fc, file = f)
             }, error=function(e){
@@ -97,7 +97,7 @@ forecast_data <- function() {
               cat("ERROR :",conditionMessage(e), "\n")
               fit <- auto.arima(ts_price, stepwise = F, approximation = F)
               fc  <- forecast(fit, h = forecastNumbOfdays)
-              fn <- paste(uid,"f.csv", sep = "")
+              fn <- paste(uid,"_arima_7d.csv", sep = "")
               f <- paste(xf,fn, sep = "")
               write.csv(fc, file = f)
             })
