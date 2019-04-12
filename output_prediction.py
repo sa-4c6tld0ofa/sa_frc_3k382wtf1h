@@ -138,7 +138,7 @@ def compute_target_price(uid,force_full_update):
     try:
         nd = 200
         #name column of each model in the same order...
-        selected_model_column = 'price_instruments_data.arima7d_tp'
+        selected_model_column = 'price_instruments_data.arima_7d_tp'
         ############################################################################################
         # (1) Add model column here define variables
         ############################################################################################
@@ -178,7 +178,7 @@ def compute_target_price(uid,force_full_update):
         ##############################################################################################
         # (3) Add model column in here for index
         ##############################################################################################
-        if selected_model_id == 0: selected_model_column = 'price_instruments_data.arima7d_tp'
+        if selected_model_id == 0: selected_model_column = 'price_instruments_data.arima_7d_tp'
         if selected_model_id == 1: selected_model_column = 'price_instruments_data.ma10_tp'
         ##############################################################################################
 
