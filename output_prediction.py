@@ -96,21 +96,21 @@ def get_forecast_pnl(s,uid,nd):
                 s_pnl_short = row[4]
             cr.close()
 
-            if s_pnl == 0 or s_pnl_long == 0 or s_pnl_short == 0:
-                if signal == "b":
-                    pnl = s_price_close - p_price_close
-                    pnl_long = pnl
-                if signal == "s":
-                    pnl = p_price_close - s_price_close
-                    pnl_short = pnl
-                cr = connection.cursor(pymysql.cursors.SSCursor)
-                sql = "UPDATE price_instruments_data SET pnl = " + str(pnl) + ", pnl_long = " + str(pnl_long) + ", pnl_short = " + str(pnl_short) + " WHERE id = " + str(id)
-                print(sql)
-                try:
-                    cr.execute(sql)
-                    connection.commit()
-                    cr.close()
-                except Exception as e: print("get_forecast_pnl() " + str(e) )
+            #if s_pnl == 0 or s_pnl_long == 0 or s_pnl_short == 0:
+            if signal == "b":
+                pnl = s_price_close - p_price_close
+                pnl_long = pnl
+            if signal == "s":
+                pnl = p_price_close - s_price_close
+                pnl_short = pnl
+            cr = connection.cursor(pymysql.cursors.SSCursor)
+            sql = "UPDATE price_instruments_data SET pnl = " + str(pnl) + ", pnl_long = " + str(pnl_long) + ", pnl_short = " + str(pnl_short) + " WHERE id = " + str(id)
+            print(sql)
+            try:
+                cr.execute(sql)
+                connection.commit()
+                cr.close()
+            except Exception as e: print("get_forecast_pnl() " + str(e) )
         i += 1
     connection.close()
 
