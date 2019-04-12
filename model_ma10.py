@@ -131,23 +131,26 @@ def set_model_ma10(uid,force_full_update):
             ##########################################################
             if model_tp == 0:
                 last_model_tp = get_model_price_ma10(uid,last_date)
-                sql = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
-                cr.execute(sql)
+                cr_u = connection.cursor(pymysql.cursors.SSCursor)
+                sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
+                cr_u.execute(sql_u)
                 connection.commit()
                 r = last_model_tp
 
-
-        sql = "SELECT "+ str(model_score_column) +" FROM instruments WHERE symbol = '"+ str(symbol) +"'"
-        cr.execute(sql)
-        rs = cr.fetchall()
         model_score = 0
-        for row in rs: model_score = row[0]
-        model_score + score
+        if force_full_update == False:
+            sql = "SELECT "+ str(model_score_column) +" FROM instruments WHERE symbol = '"+ str(symbol) +"'"
+            cr.execute(sql)
+            rs = cr.fetchall()
+            for row in rs: model_score = row[0]
+        model_score = round(model_score + score,2)
+
         sql = "UPDATE instruments SET " + str(model_score_column) + " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
         cr.execute(sql)
         connection.commit()
 
         cr_c.close()
+        cr_u.close()
         cr.close()
         connection.close()
 
