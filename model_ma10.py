@@ -45,29 +45,28 @@ def get_model_price_ma10(uid,date_str):
                                      charset='utf8mb4',
                                      cursorclass=pymysql.cursors.DictCursor)
 
-         cr = connection.cursor(pymysql.cursors.SSCursor)
-         sql = "SELECT instruments.stdev_st, instruments.symbol FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
-         cr.execute(sql)
-         rs = cr.fetchall()
-         for row in rs:
-             stdev_st = row[0]
-             symbol = row[1]
+        cr = connection.cursor(pymysql.cursors.SSCursor)
+        sql = "SELECT instruments.stdev_st, instruments.symbol FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
+        cr.execute(sql)
+        rs = cr.fetchall()
+        for row in rs:
+            stdev_st = row[0]
+            symbol = row[1]
 
-         sql = "SELECT price_close, "+ ma_column_name +" FROM price_instruments_data WHERE symbol = '"+ str(symbol) +"' AND date = " + str(date_str)
-         cr.execute(sql)
-         rs = cr.fetchall()
-         for row in rs:
-             price_close = row[0]
-             ma = row[1]
+        sql = "SELECT price_close, "+ ma_column_name +" FROM price_instruments_data WHERE symbol = '"+ str(symbol) +"' AND date = " + str(date_str)
+        cr.execute(sql)
+        rs = cr.fetchall()
+        for row in rs:
+            price_close = row[0]
+            ma = row[1]
 
         if ma <= price_close: model_tp = price_close + stdev_st
         if ma > price_close: model_tp = price_close - stdev_st
 
         r = model_tp
 
-         cr.close()
+        cr.close()
         connection.close()
-
 
     except Exception as e: print(e)
     return r
