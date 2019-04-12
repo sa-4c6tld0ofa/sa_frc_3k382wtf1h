@@ -106,6 +106,7 @@ def set_model_ma10(uid,force_full_update):
             last_price = row[2]
             model_tp = row[3]
 
+            cr_c = connection.cursor(pymysql.cursors.SSCursor)
             sql_c = "SELECT " + str(model_tp_column) + ", price_instruments_data.price_close FROM price_instruments_data JOIN symbol_list ON symbol_list.symbol = price_instruments_data.symbol WHERE symbol_list.uid = 1 AND date = DATE_SUB("+ str(last_date) +", INTERVAL 7 DAY)"
             cr_c.execute(sql_c)
             rs_c = cr_c.fetchall()
