@@ -107,7 +107,7 @@ def set_model_arima_7d(uid,force_full_update):
             # if force_full_update == False: applies only to arima_7d
             ##########################################################
             if model_tp == 0:
-                last_model_tp = get_model_price_ma10(uid,last_date)
+                last_model_tp = get_model_price_arima_7d(uid,last_date)
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
                 cr_u.execute(sql_u)
