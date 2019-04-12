@@ -189,7 +189,7 @@ def compute_target_price(uid,force_full_update):
         for row in rs: price_id = row[0]
 
         if force_full_update:
-            sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.symbol = '"+ symbol
+            sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.symbol = '"+ symbol + "'"
             cr.execute(sql); connection.commit()
             get_forecast_pnl(symbol,uid,nd)
         else:
