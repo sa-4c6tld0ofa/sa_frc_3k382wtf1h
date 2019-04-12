@@ -44,7 +44,7 @@ def get_model_price_arima_7d(uid,date_str):
                     i +=1
         r = point_forecast
 
-    except Exception as e: print(e)
+    except Exception as e: print("get_model_price_arima_7d()" + e)
     return r
 
 
@@ -129,5 +129,5 @@ def set_model_arima_7d(uid,force_full_update):
         cr.close()
         connection.close()
 
-    except Exception as e: print(e)
+    except Exception as e: print("set_model_arima_7d() " + e)
     return r
