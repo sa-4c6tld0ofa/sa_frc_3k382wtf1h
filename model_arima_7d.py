@@ -121,7 +121,7 @@ def set_model_arima_7d(uid,force_full_update):
         model_score = 0
         for row in rs: model_score = row[0]
         model_score + score
-        sql = "UPDATE price_instruments_data SET " + str(model_score_column) + " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
+        sql = "UPDATE instruments SET " + str(model_score_column) + " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
         cr.execute(sql)
         connection.commit()
 
