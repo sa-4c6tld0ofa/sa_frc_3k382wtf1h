@@ -142,8 +142,8 @@ def compute_target_price(uid,force_full_update):
         ############################################################################################
         # (1) Add model column here define variables
         ############################################################################################
-        column_of_each_model = 'instruments.score_arima7d, instruments.score_ma10'
-        score_arima7d = 0 #[0]
+        column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10'
+        score_arima_7d = 0 #[0]
         score_ma10 = 0 #[1]
         ############################################################################################
 
@@ -168,11 +168,11 @@ def compute_target_price(uid,force_full_update):
             ##########################################################################################
             # (2) Add model column as per column_of_each_model variable
             ##########################################################################################
-            score_arima7d = row[0]
+            score_arima_7d = row[0]
             score_ma10 = row[1]
             ##########################################################################################
 
-        model_list = (score_arima7d, score_ma10)
+        model_list = (score_arima_7d, score_ma10)
         selected_model_id = model_list.index( max(model_list) )
 
         ##############################################################################################
