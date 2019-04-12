@@ -110,7 +110,7 @@ def get_forecast_pnl(s,uid,nd):
                     cr.execute(sql)
                     connection.commit()
                     cr.close()
-                except Exception as e: print("get_forecast_pnl() " + e)
+                except Exception as e: print("get_forecast_pnl() " + str(e) )
         i += 1
     connection.close()
 
@@ -131,7 +131,7 @@ def get_instr_decimal_places(s):
         rs = cr.fetchall()
         for row in rs: r = row[0]
 
-    except Exception as e: print("get_instr_decimal_places() " + e)
+    except Exception as e: print("get_instr_decimal_places() " + str(e) )
     return r
 
 def compute_target_price(uid,force_full_update):
@@ -201,7 +201,7 @@ def compute_target_price(uid,force_full_update):
         connection.close()
 
 
-    except Exception as e: print("compute_target_price() " + e)
+    except Exception as e: print("compute_target_price() " + str(e) )
 
 
 def set_all_prediction_model_target_price_n_score(uid,force_full_update):
@@ -212,7 +212,7 @@ def set_all_prediction_model_target_price_n_score(uid,force_full_update):
         #target_price get the value of highest score model
         compute_target_price(uid,force_full_update)
 
-    except Exception as e: print("set_all_prediction_model_target_price_n_score() " + e)
+    except Exception as e: print("set_all_prediction_model_target_price_n_score() " + str(e) )
 
 
 def output_prediction(force_full_update,uid):
@@ -242,4 +242,4 @@ def output_prediction(force_full_update,uid):
         cr.close()
         connection.close()
 
-    except Exception as e: print("output_prediction() " + e)
+    except Exception as e: print("output_prediction() " + str(e) )
