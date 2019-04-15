@@ -158,9 +158,9 @@ def compute_target_price(uid,force_full_update):
             cr.execute(sql); connection.commit()
             clear_chart_data(symbol)
             clear_trades(symbol)
+            get_forecast_pnl(symbol,uid,nd)
 
             gen_chart(symbol,uid)
-            get_forecast_pnl(symbol,uid,nd)
             get_trades(symbol,uid,nd)
             get_instr_sum(symbol,uid,asset_class,dn,pip)
         else:
