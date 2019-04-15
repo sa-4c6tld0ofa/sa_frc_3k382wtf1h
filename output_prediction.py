@@ -119,7 +119,7 @@ def compute_target_price(uid,force_full_update):
         rs = cr.fetchall()
         for row in rs: symbol = row[0]
 
-        sql = "SELECT asset_class, pip " + str(column_of_each_model) + " FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
+        sql = "SELECT asset_class, pip, " + str(column_of_each_model) + " FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs:
