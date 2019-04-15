@@ -154,7 +154,7 @@ def compute_target_price(uid,force_full_update):
         for row in rs: price_id = row[0]
 
         if force_full_update:
-            sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.symbol = '"+ symbol + "'"
+            sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = CAST("+ selected_model_column +" AS DECIMAL(20,"+ str( get_instr_decimal_places(symbol) ) +")) WHERE price_instruments_data.symbol = '"+ symbol + "'"
             print('### ::: ' + sql)
             cr.execute(sql); connection.commit()
             clear_chart_data(symbol)
@@ -165,7 +165,7 @@ def compute_target_price(uid,force_full_update):
             gen_chart(symbol,uid)
             get_instr_sum(symbol,uid,asset_class,dn,pip)
         else:
-            sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.id = " + str(price_id)
+            sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = CAST("+ selected_model_column +" AS DECIMAL(20,"+ str( get_instr_decimal_places(symbol) ) +")) WHERE price_instruments_data.id = " + str(price_id)
             cr.execute(sql); connection.commit()
 
 

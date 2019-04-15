@@ -136,6 +136,7 @@ def set_model_ma10(uid,force_full_update):
                 cr_u.execute(sql_u)
                 connection.commit()
                 r = last_model_tp
+                cr_u.close()
 
         model_score = 0
         if force_full_update == False:
@@ -150,7 +151,6 @@ def set_model_ma10(uid,force_full_update):
         connection.commit()
 
         cr_c.close()
-        cr_u.close()
         cr.close()
         connection.close()
 
