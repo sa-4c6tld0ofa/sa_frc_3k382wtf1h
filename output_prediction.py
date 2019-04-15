@@ -27,6 +27,45 @@ from sa_numeric import *
 
 db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access_obj.db_name(); db_srv = access_obj.db_server()
 
+def clear_chart_data(s):
+    try:
+        import pymysql.cursors
+        connection = pymysql.connect(host=db_srv,
+                                     user=db_usr,
+                                     password=db_pwd,
+                                     db=db_name,
+                                     charset='utf8mb4',
+                                     cursorclass=pymysql.cursors.DictCursor)
+
+        cr = connection.cursor(pymysql.cursors.SSCursor)
+        sql = "DELETE FROM chart_data WHERE symbol = '"+ str(s) +"'"
+        cr.execute(sql)
+        connection.commit()
+
+        cr.close()
+        connection.close()
+    except Exception as e: print(e)
+
+def clear_trades(s):
+    try:
+        import pymysql.cursors
+        connection = pymysql.connect(host=db_srv,
+                                     user=db_usr,
+                                     password=db_pwd,
+                                     db=db_name,
+                                     charset='utf8mb4',
+                                     cursorclass=pymysql.cursors.DictCursor)
+
+        cr = connection.cursor(pymysql.cursors.SSCursor)
+        sql = "DELETE FROM trades WHERE symbol = '"+ str(s) +"'"
+        cr.execute(sql)
+        connection.commit()
+
+        cr.close()
+        connection.close()
+
+    except Exception as e: print(e)
+
 
 
 def get_forecast_pnl(s,uid,nd):
@@ -96,7 +135,6 @@ def get_forecast_pnl(s,uid,nd):
                 s_pnl_short = row[4]
             cr.close()
 
-            #if s_pnl == 0 or s_pnl_long == 0 or s_pnl_short == 0:
             if signal == "b":
                 pnl = s_price_close - p_price_close
                 pnl_long = pnl
@@ -145,7 +183,7 @@ def compute_target_price(uid,force_full_update):
         column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10'
         score_arima_7d = 0 #[0]
         score_ma10 = 0 #[1]
-        ############################################################################################
+        #------------------------------------------------------------------------------------------
 
         import pymysql.cursors
         connection = pymysql.connect(host=db_srv,
@@ -170,17 +208,22 @@ def compute_target_price(uid,force_full_update):
             ##########################################################################################
             score_arima_7d = row[0]
             score_ma10 = row[1]
-            ##########################################################################################
+            #----------------------------------------------------------------------------------------
 
+
+        #############################################################################################
+        # (3) Add model to the model_list
+        #############################################################################################
         model_list = (score_arima_7d, score_ma10)
         selected_model_id = model_list.index( max(model_list) )
+        #--------------------------------------------------------------------------------------------
 
         ##############################################################################################
-        # (3) Add model column in here for index
+        # (4) Add model column in here for index
         ##############################################################################################
         if selected_model_id == 0: selected_model_column = 'price_instruments_data.arima_7d_tp'
         if selected_model_id == 1: selected_model_column = 'price_instruments_data.ma10_tp'
-        ##############################################################################################
+        #---------------------------------------------------------------------------------------------
 
         sql = "SELECT id FROM price_instruments_data WHERE symbol ='"+ symbol +"' ORDER BY date DESC LIMIT 1"
         cr.execute(sql)
@@ -191,6 +234,8 @@ def compute_target_price(uid,force_full_update):
         if force_full_update:
             sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.symbol = '"+ symbol + "'"
             cr.execute(sql); connection.commit()
+            clear_chart_data(symbol)
+            clear_trades(symbol)
             get_forecast_pnl(symbol,uid,nd)
         else:
             sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.id = " + str(price_id)
