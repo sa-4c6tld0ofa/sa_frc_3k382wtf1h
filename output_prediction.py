@@ -160,8 +160,8 @@ def compute_target_price(uid,force_full_update):
             clear_trades(symbol)
             get_forecast_pnl(symbol,uid,nd)
 
-            gen_chart(symbol,uid)
             get_trades(symbol,uid,nd)
+            gen_chart(symbol,uid)
             get_instr_sum(symbol,uid,asset_class,dn,pip)
         else:
             sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.id = " + str(price_id)
