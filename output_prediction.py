@@ -22,8 +22,10 @@ from sa_access import *
 access_obj = sa_db_access()
 
 sys.path.append(os.path.abspath(sett.get_path_core() ))
-from ta_main_update_data import *
+from ta_instr_sum import *
+from ta_gen_chart_data import *
 from get_frc_pnl import *
+from get_trades import *
 
 db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access_obj.db_name(); db_srv = access_obj.db_server()
 
@@ -88,15 +90,19 @@ def get_instr_decimal_places(s):
 
 def compute_target_price(uid,force_full_update):
     try:
-        nd = 200
+        nd = 370
+        dn = datetime.datetime.now() - timedelta(days=10)
+        dn = dn.strftime("%Y%m%d")
+
+
         #name column of each model in the same order...
         selected_model_column = 'price_instruments_data.arima_7d_tp'
         ############################################################################################
         # (1) Add model column here define variables
         ############################################################################################
         column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10'
-        score_arima_7d = 0 #[0]
-        score_ma10 = 0 #[1]
+        score_arima_7d = 0
+        score_ma10 = 0
         #------------------------------------------------------------------------------------------
 
         import pymysql.cursors
@@ -113,15 +119,17 @@ def compute_target_price(uid,force_full_update):
         rs = cr.fetchall()
         for row in rs: symbol = row[0]
 
-        sql = "SELECT " + str(column_of_each_model) + " FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
+        sql = "SELECT asset_class, pip " + str(column_of_each_model) + " FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs:
+            asset_class = row[0]
+            pip = row[1]
             ##########################################################################################
             # (2) Add model column as per column_of_each_model variable
             ##########################################################################################
-            score_arima_7d = row[0]
-            score_ma10 = row[1]
+            score_arima_7d = row[2]
+            score_ma10 = row[3]
             #----------------------------------------------------------------------------------------
 
 
@@ -129,8 +137,8 @@ def compute_target_price(uid,force_full_update):
         # (3) Add model to the model_list
         #############################################################################################
         model_list = (score_arima_7d, score_ma10)
-        selected_model_id = model_list.index( max(model_list) )
         #--------------------------------------------------------------------------------------------
+        selected_model_id = model_list.index( max(model_list) )
 
         ##############################################################################################
         # (4) Add model column in here for index
@@ -150,7 +158,11 @@ def compute_target_price(uid,force_full_update):
             cr.execute(sql); connection.commit()
             clear_chart_data(symbol)
             clear_trades(symbol)
-            get_update_instr_data(1,True,symbol)
+
+            gen_chart(symbol,uid)
+            get_forecast_pnl(symbol,uid,nd)
+            get_trades(symbol,uid,nd)
+            get_instr_sum(symbol,uid,asset_class,dn,pip)
         else:
             sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = FORMAT(" + selected_model_column + ","+ str( get_instr_decimal_places(symbol) ) +") WHERE price_instruments_data.id = " + str(price_id)
             cr.execute(sql); connection.commit()

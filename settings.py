@@ -18,8 +18,5 @@ class sa_path:
     def get_path_core(self):
         return self.pdir + "\\sa_data_collection\\core"
 
-    def get_path_feed(self):
-        return self.rdir + "\\sa_data_collection\\feed"
-
 def get_portf_suffix():
     return "PRF:"
