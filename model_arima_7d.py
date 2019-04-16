@@ -101,6 +101,7 @@ def set_model_arima_7d(uid,force_full_update):
                 if (previous_price >= last_price) and (type_of_trade == 's'): score = score + 0.01
                 if (previous_price < last_price) and (type_of_trade == 'b'): score = score + 0.01
                 if (previous_price < last_price) and (type_of_trade == 's'): score = score - 0.01
+                print("### score calc "+ str(model_score_column) +": current score = " + str(score) )
 
             ##########################################################
             # check specific model function to get target price
@@ -120,7 +121,9 @@ def set_model_arima_7d(uid,force_full_update):
             cr.execute(sql)
             rs = cr.fetchall()
             for row in rs: model_score = row[0]
+        print("### Total score calc "+ str(model_score_column) +": " + str(model_score) + " + " + str(score) )
         model_score = round(model_score + score,2)
+        print("### Total score "+ str(model_score_column) +": " + str(model_score) )
 
 
         sql = "UPDATE instruments SET " + str(model_score_column) + " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
