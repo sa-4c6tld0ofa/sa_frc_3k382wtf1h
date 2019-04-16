@@ -62,7 +62,7 @@ def get_model_price_arima_7dr(uid,date_str):
                     i +=1
 
         cr = connection.cursor(pymysql.cursors.SSCursor)
-        sql = "SELECT price_close FROM price_instruments_data JOIN symbol_list ON symbol_list.symbol = price_instruments_data.symbol WHERE symbol_list.uid = " + str(uid) + " AND price_instruments_data = " + str(date_str)
+        sql = "SELECT price_close FROM price_instruments_data JOIN symbol_list ON symbol_list.symbol = price_instruments_data.symbol WHERE symbol_list.uid = " + str(uid) + " AND price_instruments_data.date = " + str(date_str)
         cr.execute(sql)
         rs = cr.fetchall()
         last_price = 0
