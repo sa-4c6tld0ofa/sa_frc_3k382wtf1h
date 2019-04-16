@@ -25,9 +25,17 @@ from sa_numeric import *
 
 db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access_obj.db_name(); db_srv = access_obj.db_server()
 
+################################################################################
+# Notes to add additional model to the system:
+# Add a column in table "instruments" named score_modelXX
+# Add a column in table "price_instruments_data" named modelXX_tp
+# Follow instruction in the following py file as well as for output_prediction.py
+################################################################################
+
 def get_model_price_arima_7d(uid,date_str):
     ################################################
-    # Logic according to model
+    # (1) Logic according to model
+    # Logic as per specific to the model
     ################################################
     r = 0
     try:
@@ -43,8 +51,9 @@ def get_model_price_arima_7d(uid,date_str):
                     if (i == 8): point_forecast = row[1]
                     i +=1
         r = point_forecast
+    #---------------------------------------------------------------------------
 
-    except Exception as e: print("get_model_price_arima_7d()" + str(e) )
+    except Exception as e: print("get_model_price_XXX()" + str(e) )
     return r
 
 
@@ -52,9 +61,11 @@ def set_model_arima_7d(uid,force_full_update):
     r = 0
     try:
         ########################################################################
+        # (2) Define names of column in use by the model
+        ########################################################################
         model_tp_column = 'price_instruments_data.arima_7d_tp'
         model_score_column = 'instruments.score_arima_7d'
-        ########################################################################
+        #-----------------------------------------------------------------------
 
         day_to_process = 400
         score = 0
@@ -108,6 +119,9 @@ def set_model_arima_7d(uid,force_full_update):
             # if force_full_update == False: applies only to arima_7d
             ##########################################################
             if model_tp == 0:
+                ########################################################################
+                # (3) Define function that calc the model target price
+                ########################################################################
                 last_model_tp = get_model_price_arima_7d(uid,last_date)
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
@@ -134,5 +148,5 @@ def set_model_arima_7d(uid,force_full_update):
         cr.close()
         connection.close()
 
-    except Exception as e: print("set_model_arima_7d() " + str(e) )
+    except Exception as e: print("set_model_XXX() " + str(e) )
     return r

@@ -5,6 +5,7 @@
 from output_prediction import *
 
 set_of_data_uid = 0
-calc_all_data = False
+calc_all_data = True
 
-output_prediction(calc_all_data,set_of_data_uid)
+for i in range(1):
+    output_prediction(calc_all_data,set_of_data_uid)

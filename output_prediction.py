@@ -100,9 +100,14 @@ def compute_target_price(uid,force_full_update):
         ############################################################################################
         # (1) Add model column here define variables
         ############################################################################################
-        column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10'
+        column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10, instruments.score_ma20, instruments.score_ma30, instruments.score_ma40, instruments.score_ma50, instruments.score_ma10ctt'
         score_arima_7d = 0
         score_ma10 = 0
+        score_ma20 = 0
+        score_ma30 = 0
+        score_ma40 = 0
+        score_ma50 = 0
+        score_ma10ctt = 0
         #------------------------------------------------------------------------------------------
 
         import pymysql.cursors
@@ -126,25 +131,35 @@ def compute_target_price(uid,force_full_update):
             asset_class = row[0]
             pip = row[1]
             ##########################################################################################
-            # (2) Add model column as per column_of_each_model variable
+            # (2) Add model column as per column_of_each_model variable and append row index
             ##########################################################################################
             score_arima_7d = row[2]
             score_ma10 = row[3]
+            score_ma20 = row[4]
+            score_ma30 = row[5]
+            score_ma40 = row[6]
+            score_ma50 = row[7]
+            score_ma10ctt = row[8]
             #----------------------------------------------------------------------------------------
 
 
         #############################################################################################
         # (3) Add model to the model_list
         #############################################################################################
-        model_list = (score_arima_7d, score_ma10)
+        model_list = (score_arima_7d, score_ma10, score_ma20, score_ma30, score_ma40, score_ma50, score_ma10ctt)
         #--------------------------------------------------------------------------------------------
         selected_model_id = model_list.index( max(model_list) )
 
         ##############################################################################################
-        # (4) Add model column in here for index
+        # (4) Add model column in here for index and increment id.
         ##############################################################################################
         if selected_model_id == 0: selected_model_column = 'price_instruments_data.arima_7d_tp'
         if selected_model_id == 1: selected_model_column = 'price_instruments_data.ma10_tp'
+        if selected_model_id == 2: selected_model_column = 'price_instruments_data.ma20_tp'
+        if selected_model_id == 3: selected_model_column = 'price_instruments_data.ma30_tp'
+        if selected_model_id == 4: selected_model_column = 'price_instruments_data.ma40_tp'
+        if selected_model_id == 5: selected_model_column = 'price_instruments_data.ma50_tp'
+        if selected_model_id == 6: selected_model_column = 'price_instruments_data.ma10ctt_tp'
         #---------------------------------------------------------------------------------------------
 
         sql = "SELECT id FROM price_instruments_data WHERE symbol ='"+ symbol +"' ORDER BY date DESC LIMIT 1"

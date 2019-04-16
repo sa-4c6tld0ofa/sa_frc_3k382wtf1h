@@ -32,7 +32,7 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 # Follow instruction in the following py file as well as for output_prediction.py
 ################################################################################
 
-def get_model_price_ma10(uid,date_str):
+def get_model_price_ma10ctt(uid,date_str):
     ################################################
     # (1) Logic according to model
     # Logic as per specific to the model
@@ -68,8 +68,8 @@ def get_model_price_ma10(uid,date_str):
             price_close = row[0]
             ma = row[1]
 
-        if ma <= price_close: model_tp = price_close + stdev_st
-        if ma > price_close: model_tp = price_close - stdev_st
+        if ma <= price_close: model_tp = price_close - stdev_st
+        if ma > price_close: model_tp = price_close + stdev_st
 
         r = model_tp
 
@@ -87,8 +87,8 @@ def set_model_ma10(uid,force_full_update):
         ########################################################################
         # (2) Define names of column in use by the model
         ########################################################################
-        model_tp_column = 'price_instruments_data.ma10_tp'
-        model_score_column = 'instruments.score_ma10'
+        model_tp_column = 'price_instruments_data.ma10ctt_tp'
+        model_score_column = 'instruments.score_ma10ctt'
         #-----------------------------------------------------------------------
 
         day_to_process = 400
@@ -142,7 +142,7 @@ def set_model_ma10(uid,force_full_update):
                 ########################################################################
                 # (3) Define function that calc the model target price
                 ########################################################################
-                last_model_tp = get_model_price_ma10(uid,last_date)
+                last_model_tp = get_model_price_ma10ctt(uid,last_date)
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
                 cr_u.execute(sql_u)
