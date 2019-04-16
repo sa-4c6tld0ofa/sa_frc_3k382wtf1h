@@ -68,8 +68,8 @@ def get_model_price_arima_7dr(uid,date_str):
         last_price = 0
         for row in rs: last_price = row[0]
 
-        if last_price <= point_forecast: r = last_price -  (point_forecast -  last_price)
-        if last_price > point_forecast: r = last_price +  (last_price - point_forecast)
+        if float(last_price) <= float(point_forecast): r = float(last_price) -  (float(point_forecast) -  float(last_price) )
+        if float(last_price) > float(point_forecast): r = float(last_price) +  (float(last_price) - float(point_forecast) )
 
         cr.close()
         connection.close()
