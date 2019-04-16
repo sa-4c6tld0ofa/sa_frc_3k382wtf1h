@@ -83,7 +83,7 @@ def get_model_price_ma50(uid,date_str):
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_ma10(uid,force_full_update):
+def set_model_ma50(uid,force_full_update):
     r = 0
     try:
         ########################################################################
