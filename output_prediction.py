@@ -194,8 +194,17 @@ def compute_target_price(uid,force_full_update):
 def set_all_prediction_model_target_price_n_score(uid,force_full_update):
     try:
         #Set the score and return model_tp
-        arima_7d_tp = set_model_arima_7d(uid,force_full_update)
-        ma10_tp = set_model_ma10(uid,force_full_update)
+        ##############################################################################################
+        # (5) Call function for each model.
+        ##############################################################################################
+        set_model_arima_7d(uid,force_full_update)
+        set_model_ma10(uid,force_full_update)
+        set_model_ma20(uid,force_full_update)
+        set_model_ma30(uid,force_full_update)
+        set_model_ma40(uid,force_full_update)
+        set_model_ma50(uid,force_full_update)
+        set_model_ma10ctt(uid,force_full_update)
+
         #target_price get the value of highest score model
         compute_target_price(uid,force_full_update)
 

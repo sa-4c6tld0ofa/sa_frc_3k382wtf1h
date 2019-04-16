@@ -81,11 +81,14 @@ def get_model_price_ma10ctt(uid,date_str):
     return r
 
 
-def set_model_ma10(uid,force_full_update):
+########################################################################
+# (2) Set the name of the model function
+########################################################################
+def set_model_ma10ctt(uid,force_full_update):
     r = 0
     try:
         ########################################################################
-        # (2) Define names of column in use by the model
+        # (2.1) Define names of column in use by the model
         ########################################################################
         model_tp_column = 'price_instruments_data.ma10ctt_tp'
         model_score_column = 'instruments.score_ma10ctt'

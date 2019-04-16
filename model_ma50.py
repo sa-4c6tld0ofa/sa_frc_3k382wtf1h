@@ -80,12 +80,14 @@ def get_model_price_ma50(uid,date_str):
     except Exception as e: print("get_model_price_XXX() " + str(e) )
     return r
 
-
+########################################################################
+# (2) Set the name of the model function
+########################################################################
 def set_model_ma10(uid,force_full_update):
     r = 0
     try:
         ########################################################################
-        # (2) Define names of column in use by the model
+        # (2.1) Define names of column in use by the model
         ########################################################################
         model_tp_column = 'price_instruments_data.ma50_tp'
         model_score_column = 'instruments.score_ma50'
