@@ -9,8 +9,17 @@ import time
 from datetime import timedelta
 import csv
 from pathlib import Path
+
+############################################################################################
+# (1) Import model
+############################################################################################
 from model_arima_7d import *
 from model_ma10 import *
+from model_ma20 import *
+from model_ma30 import *
+from model_ma40 import *
+from model_ma50 import *
+from model_ma10ctt import *
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -98,7 +107,7 @@ def compute_target_price(uid,force_full_update):
         #name column of each model in the same order...
         selected_model_column = 'price_instruments_data.arima_7d_tp'
         ############################################################################################
-        # (1) Add model column here define variables
+        # (2) Add model column here define variables
         ############################################################################################
         column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10, instruments.score_ma20, instruments.score_ma30, instruments.score_ma40, instruments.score_ma50, instruments.score_ma10ctt'
         score_arima_7d = 0
@@ -131,7 +140,7 @@ def compute_target_price(uid,force_full_update):
             asset_class = row[0]
             pip = row[1]
             ##########################################################################################
-            # (2) Add model column as per column_of_each_model variable and append row index
+            # (3) Add model column as per column_of_each_model variable and append row index
             ##########################################################################################
             score_arima_7d = row[2]
             score_ma10 = row[3]
@@ -144,14 +153,14 @@ def compute_target_price(uid,force_full_update):
 
 
         #############################################################################################
-        # (3) Add model to the model_list
+        # (4) Add model to the model_list
         #############################################################################################
         model_list = (score_arima_7d, score_ma10, score_ma20, score_ma30, score_ma40, score_ma50, score_ma10ctt)
         #--------------------------------------------------------------------------------------------
         selected_model_id = model_list.index( max(model_list) )
 
         ##############################################################################################
-        # (4) Add model column in here for index and increment id.
+        # (5) Add model column in here for index and increment id.
         ##############################################################################################
         if selected_model_id == 0: selected_model_column = 'price_instruments_data.arima_7d_tp'
         if selected_model_id == 1: selected_model_column = 'price_instruments_data.ma10_tp'
@@ -195,7 +204,7 @@ def set_all_prediction_model_target_price_n_score(uid,force_full_update):
     try:
         #Set the score and return model_tp
         ##############################################################################################
-        # (5) Call function for each model.
+        # (6) Call function for each model.
         ##############################################################################################
         set_model_arima_7d(uid,force_full_update)
         set_model_ma10(uid,force_full_update)
