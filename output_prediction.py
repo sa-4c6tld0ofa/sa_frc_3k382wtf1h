@@ -20,6 +20,7 @@ from model_ma30 import *
 from model_ma40 import *
 from model_ma50 import *
 from model_ma10ctt import *
+from model_arima_7dr import *
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -109,7 +110,7 @@ def compute_target_price(uid,force_full_update):
         ############################################################################################
         # (2) Add model column here define variables
         ############################################################################################
-        column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10, instruments.score_ma20, instruments.score_ma30, instruments.score_ma40, instruments.score_ma50, instruments.score_ma10ctt'
+        column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10, instruments.score_ma20, instruments.score_ma30, instruments.score_ma40, instruments.score_ma50, instruments.score_ma10ctt, instruments.score_arima_7dr'
         score_arima_7d = 0
         score_ma10 = 0
         score_ma20 = 0
@@ -117,6 +118,7 @@ def compute_target_price(uid,force_full_update):
         score_ma40 = 0
         score_ma50 = 0
         score_ma10ctt = 0
+        score_arima_7dr = 0
         #------------------------------------------------------------------------------------------
 
         import pymysql.cursors
@@ -149,13 +151,14 @@ def compute_target_price(uid,force_full_update):
             score_ma40 = row[6]
             score_ma50 = row[7]
             score_ma10ctt = row[8]
+            score_arima_7dr = row[9]
             #----------------------------------------------------------------------------------------
 
 
         #############################################################################################
         # (4) Add model to the model_list
         #############################################################################################
-        model_list = (score_arima_7d, score_ma10, score_ma20, score_ma30, score_ma40, score_ma50, score_ma10ctt)
+        model_list = (score_arima_7d, score_ma10, score_ma20, score_ma30, score_ma40, score_ma50, score_ma10ctt, score_arima_7dr)
         #--------------------------------------------------------------------------------------------
         selected_model_id = model_list.index( max(model_list) )
 
@@ -169,6 +172,7 @@ def compute_target_price(uid,force_full_update):
         if selected_model_id == 4: selected_model_column = 'price_instruments_data.ma40_tp'
         if selected_model_id == 5: selected_model_column = 'price_instruments_data.ma50_tp'
         if selected_model_id == 6: selected_model_column = 'price_instruments_data.ma10ctt_tp'
+        if selected_model_id == 7: selected_model_column = 'price_instruments_data.arima_7dr_tp'
         #---------------------------------------------------------------------------------------------
 
         sql = "SELECT id FROM price_instruments_data WHERE symbol ='"+ symbol +"' ORDER BY date DESC LIMIT 1"
@@ -213,6 +217,7 @@ def set_all_prediction_model_target_price_n_score(uid,force_full_update):
         set_model_ma40(uid,force_full_update)
         set_model_ma50(uid,force_full_update)
         set_model_ma10ctt(uid,force_full_update)
+        set_model_arima_7dr(uid,force_full_update)
 
         #target_price get the value of highest score model
         compute_target_price(uid,force_full_update)
