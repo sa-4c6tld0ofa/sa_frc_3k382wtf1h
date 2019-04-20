@@ -189,7 +189,7 @@ def compute_target_price(uid,force_full_update):
             clear_trades(symbol)
             get_forecast_pnl(symbol,uid,nd)
 
-            get_trades(symbol,uid,nd)
+            get_trades(symbol,uid,nd,False)
             gen_chart(symbol,uid)
             get_instr_sum(symbol,uid,asset_class,dn,pip)
         else:
