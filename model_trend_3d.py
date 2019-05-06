@@ -94,8 +94,8 @@ def set_model_3d_trend(uid,force_full_update):
         ########################################################################
         # (2.1) Define names of column in use by the model
         ########################################################################
-        model_tp_column = 'price_instruments_data.ma10_tp'
-        model_score_column = 'instruments.score_ma10'
+        model_tp_column = 'price_instruments_data.3dtrend_tp'
+        model_score_column = 'instruments.score_3dtrend'
         #-----------------------------------------------------------------------
 
         day_to_process = 400
