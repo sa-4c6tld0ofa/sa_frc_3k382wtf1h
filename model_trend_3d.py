@@ -62,7 +62,7 @@ def get_model_3d_trend(uid,date_str):
             symbol = row[0]
             stdev_st = row[1]
 
-        sql = "SELECT price_close, 3dtrend price_instruments_data WHERE symbol = '"+ str(symbol) +"' AND date = " + str(date_str)
+        sql = "SELECT price_close, 3dtrend FROM price_instruments_data WHERE symbol = '"+ str(symbol) +"' AND date = " + str(date_str)
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs:
