@@ -28,7 +28,8 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 ######################################################################################################################################
 # Notes to add additional model to the system:
 # a. Add a column in table "price_instruments_data" containing value of indicator
-# b. In sa_data_collection repository, reference the new indicator in file ta_main_update_data.py in function get_update_instr_data()
+# b. Develop indicator. Add this py file to sa_data_collection in folder named "core", available for reference in ta_main_update_data.py
+# c. In sa_data_collection repository, reference the new indicator in file ta_main_update_data.py in function get_update_instr_data()
 # 1. Add a column in table "instruments" named score_modelXX
 # 2. Add a column in table "price_instruments_data" named modelXX_tp
 # 3. Follow instruction in the following py file as well as for output_prediction.py
@@ -49,13 +50,32 @@ def get_model_3d_trend(uid,date_str):
                                      charset='utf8mb4',
                                      cursorclass=pymysql.cursors.DictCursor)
 
+        target_price = 0
+        price_close = 0
+        ta_3dtrend = ''
+
         cr = connection.cursor(pymysql.cursors.SSCursor)
-        sql = "SELECT instruments.* FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
+        sql = "SELECT instruments.symbol, instruments.stdev_st FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs:
-            stdev_st = row[0]
-            symbol = row[1]
+            symbol = row[0]
+            stdev_st = row[1]
+
+        sql = "SELECT price_close, 3dtrend price_instruments_data WHERE symbol = '"+ str(symbol) +"' AND date = " + str(date_str)
+        cr.execute(sql)
+        rs = cr.fetchall()
+        for row in rs:
+            price_close = row[0]
+            ta_3dtrend = row[1]
+
+        if ta_3dtrend == 'u':
+            target_price = float(price_close) + float(stdev_st)
+        if ta_3dtrend == 'd':
+            target_price = float(price_close) - float(stdev_st)
+        if ta_3dtrend == '':
+            target_price = price_close
+        r = target_price
 
         cr.close()
         connection.close()
@@ -68,6 +88,7 @@ def get_model_3d_trend(uid,date_str):
 # (2) Set the name of the model function
 ########################################################################
 def set_model_3d_trend(uid,force_full_update):
+    #-------------------------------------------------------------------
     r = 0
     try:
         ########################################################################
@@ -129,6 +150,7 @@ def set_model_3d_trend(uid,force_full_update):
                 # (3) Define function that calc the model target price
                 ########################################################################
                 last_model_tp = get_model_3d_trend(uid,last_date)
+                #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
                 cr_u.execute(sql_u)

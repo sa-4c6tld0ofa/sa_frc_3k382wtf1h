@@ -28,7 +28,8 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 ######################################################################################################################################
 # Notes to add additional model to the system:
 # a. Add a column in table "price_instruments_data" containing value of indicator
-# b. In sa_data_collection repository, reference the new indicator in file ta_main_update_data.py in function get_update_instr_data()
+# b. Develop indicator. Add this py file to sa_data_collection in folder named "core", available for reference in ta_main_update_data.py
+# c. In sa_data_collection repository, reference the new indicator in file ta_main_update_data.py in function get_update_instr_data()
 # 1. Add a column in table "instruments" named score_modelXX
 # 2. Add a column in table "price_instruments_data" named modelXX_tp
 # 3. Follow instruction in the following py file as well as for output_prediction.py
@@ -68,6 +69,7 @@ def get_model_template(uid,date_str):
 # (2) Set the name of the model function
 ########################################################################
 def set_model_template(uid,force_full_update):
+    #-------------------------------------------------------------------
     r = 0
     try:
         ########################################################################
@@ -129,6 +131,7 @@ def set_model_template(uid,force_full_update):
                 # (3) Define function that calc the model target price
                 ########################################################################
                 last_model_tp = get_model_template(uid,last_date)
+                #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
                 cr_u.execute(sql_u)
