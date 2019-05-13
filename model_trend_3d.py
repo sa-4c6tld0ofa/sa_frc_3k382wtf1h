@@ -9,6 +9,7 @@ import time
 from datetime import timedelta
 import csv
 from pathlib import Path
+from model_trend_calc import *
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -146,12 +147,18 @@ def set_model_3d_trend(uid,force_full_update):
                 print("### score calc "+ str(model_score_column) +": current score = " + str(score) )
 
             if model_tp == 0:
+                trend = trend_data(symbol, last_date)
+                trend_3d_value = trend.get_3d_trend(); trend_5d_value = trend.get_5d_trend(); trend_7d_value = trend.get_7d_trend()
+                cr_u = connection.cursor(pymysql.cursors.SSCursor)
+                sql_u = "UPDATE price_instruments_data SET 3dtrend = '"+ str(trend_3d_value) +"', 5dtrend = '"+ str(trend_5d_value) +"', 7dtrend = '"+ str(trend_7d_value) +"'  WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
+                cr_u.execute(sql_u)
+                connection.commit()
+
                 ########################################################################
                 # (3) Define function that calc the model target price
                 ########################################################################
                 last_model_tp = get_model_3d_trend(uid,last_date)
                 #-----------------------------------------------------------------------
-                cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
                 cr_u.execute(sql_u)
                 connection.commit()
