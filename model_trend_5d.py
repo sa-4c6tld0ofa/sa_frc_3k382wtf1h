@@ -9,6 +9,7 @@ import time
 from datetime import timedelta
 import csv
 from pathlib import Path
+from model_trend_calc import *
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -152,7 +153,7 @@ def set_model_5d_trend(uid,force_full_update):
                 sql_u = "UPDATE price_instruments_data SET 3dtrend = '"+ str(trend_3d_value) +"', 5dtrend = '"+ str(trend_5d_value) +"', 7dtrend = '"+ str(trend_7d_value) +"'  WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
                 cr_u.execute(sql_u)
                 connection.commit()
-                            
+
                 ########################################################################
                 # (3) Define function that calc the model target price
                 ########################################################################
