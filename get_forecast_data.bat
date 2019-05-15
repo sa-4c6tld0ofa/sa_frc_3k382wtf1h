@@ -9,8 +9,7 @@ SET _PIP_EXE="%LOCALAPPDATA%\Programs\Python\%PY_VER%\Scripts\pip.exe"
 SET _PY_EXE="%LOCALAPPDATA%\Programs\Python\%PY_VER%\python.exe"
 
 REM ### Get Forecast
-START "" %_R_SCRIPT_EXE% "%SA_DATA_DIR%r_forecast\forecast_arima_asc.R"
-ping 127.0.0.1 -n 120
+%_R_SCRIPT_EXE% "%SA_DATA_DIR%r_forecast\forecast_arima_asc.R"
 %_R_SCRIPT_EXE% "%SA_DATA_DIR%r_forecast\forecast_arima_dsc.R"
 
 REM ### Output the prediction model
