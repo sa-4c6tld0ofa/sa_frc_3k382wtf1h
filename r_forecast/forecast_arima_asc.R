@@ -101,7 +101,7 @@ forecast_data <- function() {
               f <- paste(xf,fn, sep = "")
               write.csv(fc, file = f)
             })
-            print(paste(uid),nrow(symbol_list)/2)+1,sep ="/")
+            print(paste(uid),sep ="/")
             gc()
             gcinfo(TRUE)
           })
