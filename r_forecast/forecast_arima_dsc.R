@@ -70,8 +70,9 @@ forecast_data <- function() {
       symbol <- symbol_list[i,1]
       uid <- symbol_list[i,2]
       hd_sql <- paste("SELECT date, price_close FROM price_instruments_data WHERE symbol ='",symbol,"' AND date>= date_sub(",StartDate,", interval 40 day) ORDER BY date ASC", sep = "")
-      hd_res <- dbSendQuery(con, hd_sql)
       rm(mydata)
+      rm(hd_res)
+      hd_res <- dbSendQuery(con, hd_sql)
       mydata <- fetch(hd_res, n = -1)
 
         attach(mydata)
