@@ -115,7 +115,6 @@ forecast_data <- function() {
       }, error=function(e){
         cat("ERROR :",conditionMessage(e), "\n")
       })
-      detach(mydata)
       print(paste(uid),sep ="")
       gc()
       gcinfo(TRUE)
