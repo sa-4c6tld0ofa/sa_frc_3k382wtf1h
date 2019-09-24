@@ -104,13 +104,14 @@ forecast_data <- function() {
               f <- paste(xf,fn, sep = "")
               write.csv(fc, file = f)
             })
-            print(paste(uid),sep ="")
-            gc()
-            gcinfo(TRUE)
           })
       }, error=function(e){
         cat("ERROR :",conditionMessage(e), "\n")
       })
+      print(paste(uid),sep ="")
+      gc()
+      gcinfo(TRUE)
+
       i = i-1
   }
 
