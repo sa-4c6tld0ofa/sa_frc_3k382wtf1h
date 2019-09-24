@@ -64,7 +64,7 @@ forecast_data <- function() {
 
   symbol_list <- fetch(res, n = -1)
   i <- 1
-  while (i <= (nrow(symbol_list)/2)+1 ) {
+  while (i <= (nrow(symbol_list) ) ) {
     tryCatch({
       symbol <- symbol_list[i,1]
       uid <- symbol_list[i,2]
