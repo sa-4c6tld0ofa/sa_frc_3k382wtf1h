@@ -274,7 +274,7 @@ def output_prediction(force_full_update,uid):
         cr = connection.cursor(pymysql.cursors.SSCursor)
 
         if uid == 0:
-            sql = "SELECT uid FROM symbol_list WHERE symbol NOT LIKE '%"+ get_portf_suffix() +"%' ORDER BY symbol"
+            sql = "SELECT uid FROM symbol_list WHERE symbol NOT LIKE '%"+ get_portf_suffix() +"%' AND disabled=0 ORDER BY symbol"
         else:
             sql = "SELECT uid FROM symbol_list WHERE uid = " + str(uid)
 
