@@ -27,6 +27,7 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 
 ######################################################################################################################################
 # Notes to add additional model to the system:
+# {} Replace {template} with the name of the model
 # a. Add a column in table "price_instruments_data" containing value of indicator
 # b. Develop indicator. Add this py file to sa_data_collection in folder named "core", available for reference in ta_main_update_data.py
 # c. In sa_data_collection repository, reference the new indicator in file ta_main_update_data.py in function get_update_instr_data()
@@ -35,13 +36,21 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 # 3. Follow instruction in the following py file as well as for output_prediction.py
 ######################################################################################################################################
 
-def get_model_template(uid,date_str):
+def get_model_{template}(uid,date_str):
     ################################################
     # (1) Logic according to model
     # Logic as per specific to the model
     ################################################
     r = 0
     try:
+
+        column_data_name = {name_of_column_in_table}
+        stdev_st = 0
+        symbol = ''
+        price_close = 0
+        model_data = 0
+        model_tp = 0
+
         import pymysql.cursors
         connection = pymysql.connect(host=db_srv,
                                      user=db_usr,
@@ -58,9 +67,21 @@ def get_model_template(uid,date_str):
             stdev_st = row[0]
             symbol = row[1]
 
+        sql = "SELECT price_close, "+ column_data_name +" FROM price_instruments_data WHERE symbol = '"+ str(symbol) +"' AND date = " + str(date_str)
+        cr.execute(sql)
+        rs = cr.fetchall()
+        for row in rs:
+            price_close = row[0]
+            model_data = row[1]
+
+        # Model Logic
+        #-----------------------------------------------------------------------
+        if model_data <= price_close: model_tp = price_close + stdev_st
+        if model_data > price_close: model_tp = price_close - stdev_st
+        #-----------------------------------------------------------------------
+
         cr.close()
         connection.close()
-    #---------------------------------------------------------------------------
 
     except Exception as e: print("get_model_price_XXX() " + str(e) )
     return r
@@ -68,7 +89,7 @@ def get_model_template(uid,date_str):
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_template(uid,force_full_update):
+def set_model_{template}(uid,force_full_update):
     #-------------------------------------------------------------------
     r = 0
     try:
@@ -130,7 +151,7 @@ def set_model_template(uid,force_full_update):
                 ########################################################################
                 # (3) Define function that calc the model target price
                 ########################################################################
-                last_model_tp = get_model_template(uid,last_date)
+                last_model_tp = get_model_{template}(uid,last_date)
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( last_model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
