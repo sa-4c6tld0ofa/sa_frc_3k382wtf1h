@@ -42,7 +42,6 @@ from model_arima_7dr import *
 from model_trend_3d import *
 from model_trend_5d import *
 from model_trend_7d import *
-from model_stpac import *
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
