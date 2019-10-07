@@ -75,7 +75,7 @@ def get_model_price_arima_7dr(uid,date_str):
         connection.close()
     #---------------------------------------------------------------------------
 
-    except Exception as e: print("get_model_price_XXX()" + str(e) )
+    except Exception as e: print("get_model_price_arima_7dr()" + str(e) )
     return r
 
 ########################################################################
@@ -172,5 +172,5 @@ def set_model_arima_7dr(uid,force_full_update):
         cr.close()
         connection.close()
 
-    except Exception as e: print("set_model_XXX() " + str(e) )
+    except Exception as e: print("set_model_arima_7dr() " + str(e) )
     return r

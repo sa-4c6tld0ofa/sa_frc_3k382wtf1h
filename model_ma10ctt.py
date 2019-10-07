@@ -77,7 +77,7 @@ def get_model_price_ma10ctt(uid,date_str):
         connection.close()
     #---------------------------------------------------------------------------
 
-    except Exception as e: print("get_model_price_XXX() " + str(e) )
+    except Exception as e: print("get_model_price_ma10ctt() " + str(e) )
     return r
 
 
@@ -171,5 +171,5 @@ def set_model_ma10ctt(uid,force_full_update):
         cr.close()
         connection.close()
 
-    except Exception as e: print("set_model_XXX() " + str(e) )
+    except Exception as e: print("set_model_ma10ctt() " + str(e) )
     return r

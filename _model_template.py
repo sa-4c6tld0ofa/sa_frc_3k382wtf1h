@@ -83,7 +83,7 @@ def get_model_{template}(uid,date_str):
         cr.close()
         connection.close()
 
-    except Exception as e: print("get_model_price_XXX() " + str(e) )
+    except Exception as e: print("get_model_price_{template}() " + str(e) )
     return r
 
 ########################################################################
@@ -178,5 +178,5 @@ def set_model_{template}(uid,force_full_update):
         cr.close()
         connection.close()
 
-    except Exception as e: print("set_model_XXX() " + str(e) )
+    except Exception as e: print("set_model_{template}() " + str(e) )
     return r
