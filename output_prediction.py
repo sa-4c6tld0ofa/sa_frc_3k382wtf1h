@@ -42,6 +42,7 @@ from model_arima_7dr import *
 from model_trend_3d import *
 from model_trend_5d import *
 from model_trend_7d import *
+from model_price_action import *
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -131,8 +132,11 @@ def compute_target_price(uid,force_full_update):
         ############################################################################################
         # (2) Add model column here define variables
         ############################################################################################
+        #Add column in the string below:
         column_of_each_model = 'instruments.score_arima_7d, instruments.score_ma10, instruments.score_ma20, instruments.score_ma30, instruments.score_ma40, instruments.score_ma50, '+\
-                                'instruments.score_ma10ctt, instruments.score_arima_7dr, instruments.score_3dtrend, instruments.score_5dtrend, instruments.score_7dtrend'
+        'instruments.score_ma10ctt, instruments.score_arima_7dr, instruments.score_3dtrend, instruments.score_5dtrend, instruments.score_7dtrend, instruments.score_price_action_20d'
+        #-------------------------------------------------------------------------------------------
+        #Add a variable named based on the model column:
         score_arima_7d = 0
         score_ma10 = 0
         score_ma20 = 0
@@ -144,6 +148,7 @@ def compute_target_price(uid,force_full_update):
         score_3dtrend = 0
         score_5dtrend = 0
         score_7dtrend = 0
+        score_price_action_20d = 0
         #------------------------------------------------------------------------------------------
 
         import pymysql.cursors
@@ -180,13 +185,14 @@ def compute_target_price(uid,force_full_update):
             score_3dtrend = row[10]
             score_5dtrend = row[11]
             score_7dtrend = row[12]
+            score_price_action_20d = row[13]
             #----------------------------------------------------------------------------------------
 
 
         #############################################################################################
         # (4) Add model to the model_list
         #############################################################################################
-        model_list = (score_arima_7d, score_ma10, score_ma20, score_ma30, score_ma40, score_ma50, score_ma10ctt, score_arima_7dr, score_3dtrend, score_5dtrend, score_7dtrend)
+        model_list = (score_arima_7d, score_ma10, score_ma20, score_ma30, score_ma40, score_ma50, score_ma10ctt, score_arima_7dr, score_3dtrend, score_5dtrend, score_7dtrend, score_price_action_20d)
         #--------------------------------------------------------------------------------------------
         selected_model_id = model_list.index( max(model_list) )
 
@@ -204,6 +210,7 @@ def compute_target_price(uid,force_full_update):
         if selected_model_id == 8: selected_model_column = 'price_instruments_data.3dtrend_tp'
         if selected_model_id == 9: selected_model_column = 'price_instruments_data.5dtrend_tp'
         if selected_model_id == 10: selected_model_column = 'price_instruments_data.7dtrend_tp'
+        if selected_model_id == 11: selected_model_column = 'price_instruments_data.price_action_20d_tp'
         #---------------------------------------------------------------------------------------------
 
         sql = "SELECT id FROM price_instruments_data WHERE symbol ='"+ symbol +"' ORDER BY date DESC LIMIT 1"
@@ -252,6 +259,7 @@ def set_all_prediction_model_target_price_n_score(uid,force_full_update):
         set_model_3d_trend(uid,force_full_update)
         set_model_5d_trend(uid,force_full_update)
         set_model_7d_trend(uid,force_full_update)
+        set_model_price_action(uid,force_full_update)
         #--------------------------------------------------------------------------------------------
 
         #target_price get the value of highest score model

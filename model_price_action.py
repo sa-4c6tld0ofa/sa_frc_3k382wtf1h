@@ -36,7 +36,7 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 # 3. Follow instruction in the following py file as well as for output_prediction.py
 ######################################################################################################################################
 
-def get_model_{template}(uid,date_str):
+def get_model_price_action(uid,date_str):
     ################################################
     # (1) Logic according to model
     # Logic as per specific to the model
@@ -44,7 +44,7 @@ def get_model_{template}(uid,date_str):
     r = 0
     try:
 
-        column_data_name = {name_of_column_in_table}
+        column_data_name = 'price_action_20d'
         stdev_st = 0
         symbol = ''
         price_close = 0
@@ -76,29 +76,29 @@ def get_model_{template}(uid,date_str):
 
         # Model Logic
         #-----------------------------------------------------------------------
-        if model_data <= price_close: model_tp = price_close + stdev_st
-        if model_data > price_close: model_tp = price_close - stdev_st
+        if model_data < 1: model_tp = price_close - stdev_st
+        if model_data >= 1: model_tp = price_close + stdev_st
         #-----------------------------------------------------------------------
         r = model_tp
         cr.close()
         connection.close()
 
-    except Exception as e: print("get_model_{template}() " + str(e) )
+    except Exception as e: print("get_model_price_action() " + str(e) )
     return r
 
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_{template}(uid,force_full_update):
+def set_model_price_action(uid,force_full_update):
     #-------------------------------------------------------------------
     r = 0
     try:
         ########################################################################
         # (2.1) Define names of column in use by the model
         ########################################################################
-        model_column = 'price_instruments_data.ma10'
-        model_tp_column = 'price_instruments_data.ma10_tp'
-        model_score_column = 'instruments.score_ma10'
+        model_column = 'price_instruments_data.price_action_20d'
+        model_tp_column = 'price_instruments_data.price_action_20d_tp'
+        model_score_column = 'instruments.score_price_action_20d'
         #-----------------------------------------------------------------------
 
         day_to_process = 400
@@ -154,7 +154,7 @@ def set_model_{template}(uid,force_full_update):
                 # (2.2) Create a function to calculate the value of the model data
                 # function should contains specific parameters: symbol, date
                 ########################################################################
-                model_data = {Reference_to_function_get_data}(symbol,selected_date)
+                model_data = get_price_action_model_data(symbol, selected_date)
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET "+ model_column +" = "+ str(model_data) +" WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
@@ -163,7 +163,7 @@ def set_model_{template}(uid,force_full_update):
                 ########################################################################
                 # (3) Define function that calc the model target price
                 ########################################################################
-                model_tp = get_model_{template}(uid,last_date)
+                model_tp = get_model_price_action(uid,last_date)
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
@@ -190,5 +190,61 @@ def set_model_{template}(uid,force_full_update):
         cr.close()
         connection.close()
 
-    except Exception as e: print("set_model_{template}() " + str(e) )
+    except Exception as e: print("set_model_price_action() " + str(e) )
+    return r
+
+
+
+def get_data_day(w,symbol,date_start,date_end):
+    r = 0
+    try:
+        connection = pymysql.connect(host=db_srv,
+                                     user=db_usr,
+                                     password=db_pwd,
+                                     db=db_name,
+                                     charset='utf8mb4',
+                                     cursorclass=pymysql.cursors.DictCursor)
+        cr = connection.cursor(pymysql.cursors.SSCursor)
+        if w == 'u': sql = 'SELECT COUNT(*) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" change_1d >0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
+        if w == 'd': sql = 'SELECT COUNT(*) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" change_1d <0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
+        if w == 'avgu': sql = 'SELECT AVG(change_1d) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" change_1d >0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
+        if w == 'avgd': sql = 'SELECT AVG(change_1d) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" change_1d <0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
+        if w == 's': sql = 'SELECT sentiment_1d FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" date >=' + str(date_start) + ' AND date <=' + str(date_end)
+        cr.execute(sql)
+        rs = cr.fetchall()
+        for row in rs: r = row[0]
+        cr.close()
+        connection.close()
+    except Exception as e: print(e)
+    return r
+
+def get_price_action_model_data(symbol, selected_date):
+    r = 0
+    try:
+        date_end = selected_date
+        date_start = selected_date - timedelta(days=20)
+        date_start_str = date_end.strftime("%Y%m%d")
+        date_end_str = date_end.strftime("%Y%m%d")
+
+        #1. count number of days up in num_period
+        day_up = get_data_day('u',symbol,date_start_str,date_end_str)
+        #2. count number of days down in num_period
+        day_down = get_data_day('d',symbol,date_start_str,date_end_str)
+        #3. average volatility percentage of days up in num_period
+        day_avg_vol_up = get_data_day('avgu',symbol,date_start_str,date_end_str)
+        #4. average volatility percentage of days down in num_period
+        day_avg_vol_down = get_data_day('avgd',symbol,date_start_str,date_end_str)
+        #5. sentiment_1d
+        c = get_data_day('s',symbol,date_start_str,date_end_str)
+        # a = days_up / days_down
+        a = day_up / day_down
+        # b = vol_days_up / vol_days_down
+        b = day_avg_vol_up / day_avg_vol_down
+        # (a + b) / 2
+        if c != 0:
+            r = (a + b + c) / 3
+        else:
+            r = (a + b) / 2
+
+    except Exception as e: print(e)
     return r
