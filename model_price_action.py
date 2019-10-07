@@ -210,6 +210,7 @@ def get_data_day(w,symbol,date_start,date_end):
         if w == 'avgu': sql = 'SELECT AVG(change_1d) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" change_1d >0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
         if w == 'avgd': sql = 'SELECT AVG(change_1d) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" change_1d <0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
         if w == 's': sql = 'SELECT sentiment_1d FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" date >=' + str(date_start) + ' AND date <=' + str(date_end)
+        print(sql)
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs: r = row[0]
