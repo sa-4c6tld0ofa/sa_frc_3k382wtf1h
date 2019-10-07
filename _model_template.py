@@ -79,7 +79,7 @@ def get_model_{template}(uid,date_str):
         if model_data <= price_close: model_tp = price_close + stdev_st
         if model_data > price_close: model_tp = price_close - stdev_st
         #-----------------------------------------------------------------------
-
+        r = model_tp
         cr.close()
         connection.close()
 
