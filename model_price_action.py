@@ -60,7 +60,7 @@ def get_model_price_action(uid,date_str):
                                      cursorclass=pymysql.cursors.DictCursor)
 
         cr = connection.cursor(pymysql.cursors.SSCursor)
-        sql = "SELECT instruments.* FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
+        sql = "SELECT instruments.stdev_st, instruments.symbol FROM instruments JOIN symbol_list ON symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs:
@@ -169,7 +169,7 @@ def set_model_price_action(uid,force_full_update):
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
                 cr_u.execute(sql_u)
                 connection.commit()
-                r = last_model_tp
+                r = model_tp
                 cr_u.close()
 
         model_score = 0
@@ -224,7 +224,7 @@ def get_price_action_model_data(symbol, selected_date):
     try:
         date_end = selected_date
         date_start = selected_date - timedelta(days=20)
-        date_start_str = date_end.strftime("%Y%m%d")
+        date_start_str = date_start.strftime("%Y%m%d")
         date_end_str = date_end.strftime("%Y%m%d")
 
         #1. count number of days up in num_period
