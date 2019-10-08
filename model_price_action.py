@@ -157,7 +157,6 @@ def set_model_price_action(uid,force_full_update):
                 # function should contains specific parameters: symbol, date
                 ########################################################################
                 model_data = get_price_action_model_data(symbol, selected_date)
-                print(str(model_data) + ' ::: '+ str(last_date) + ' ::: ' + str(selected_date) )
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET "+ model_column +" = "+ str(model_data) +" WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
@@ -167,6 +166,7 @@ def set_model_price_action(uid,force_full_update):
                 # (3) Define function that calc the model target price
                 ########################################################################
                 model_tp = get_model_price_action(uid,last_date)
+                print( str(model_tp) + ' ::: ' + str(last_date) + ' ::: ' + str(selected_date) )
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
