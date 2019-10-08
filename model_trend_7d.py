@@ -140,10 +140,12 @@ def set_model_7d_trend(uid,force_full_update):
                 type_of_trade = ''
                 if previous_price <= model_prediction_tp: type_of_trade = 'b'
                 if previous_price > model_prediction_tp: type_of_trade = 's'
-                if (previous_price >= last_price) and (type_of_trade == 'b'): score = score - 0.01
+                if (previous_price >= last_price) and (type_of_trade == 'b'):
+                    if score > 0: score = score - 0.01
                 if (previous_price >= last_price) and (type_of_trade == 's'): score = score + 0.01
                 if (previous_price < last_price) and (type_of_trade == 'b'): score = score + 0.01
-                if (previous_price < last_price) and (type_of_trade == 's'): score = score - 0.01
+                if (previous_price < last_price) and (type_of_trade == 's'):
+                    if score > 0: score = score - 0.01
                 print("### score calc "+ str(model_score_column) +": current score = " + str(score) )
 
             if model_tp == 0:

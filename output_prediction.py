@@ -118,6 +118,8 @@ def get_instr_decimal_places(s):
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs: r = row[0]
+        cr.close()
+        connection.close()
 
     except Exception as e: print("get_instr_decimal_places() " + str(e) )
     return r
