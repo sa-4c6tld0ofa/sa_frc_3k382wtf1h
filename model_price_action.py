@@ -83,7 +83,7 @@ def get_model_price_action(uid,date_str):
         cr.close()
         connection.close()
 
-        print(str(symbol) + ' ::: ' + str(date_str) + ' ::: ' + str(price_close) + ' ::: stdev=' + str(stdev_st) )
+        print(str(symbol) + ' ::: '+ str(r) +' = ' + str(date_str) + ' ::: ' + str(price_close) + ' ::: stdev=' + str(stdev_st) )
 
     except Exception as e: print("get_model_price_action() " + str(e) )
     return r
@@ -157,6 +157,7 @@ def set_model_price_action(uid,force_full_update):
                 # function should contains specific parameters: symbol, date
                 ########################################################################
                 model_data = get_price_action_model_data(symbol, selected_date)
+                print(str(model_data) + ' ::: '+ str(last_date) + ' ::: ' + str(selected_date) )
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET "+ model_column +" = "+ str(model_data) +" WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
