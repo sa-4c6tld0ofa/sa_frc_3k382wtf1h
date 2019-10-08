@@ -36,7 +36,7 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 # 3. Follow instruction in the following py file as well as for output_prediction.py
 ######################################################################################################################################
 
-def get_model_price_action(uid,date_str):
+def get_model_price_action_10dr(uid,date_str):
     ################################################
     # (1) Logic according to model
     # Logic as per specific to the model
@@ -44,7 +44,7 @@ def get_model_price_action(uid,date_str):
     r = 0
     try:
 
-        column_data_name = 'price_action_20d'
+        column_data_name = 'price_action_10dr'
         stdev_st = 0
         symbol = ''
         price_close = 0
@@ -85,22 +85,22 @@ def get_model_price_action(uid,date_str):
 
         print(str(symbol) + ' ::: '+ str(r) +' = ' + str(date_str) + ' ::: ' + str(price_close) + ' ::: stdev=' + str(stdev_st) )
 
-    except Exception as e: print("get_model_price_action() " + str(e) )
+    except Exception as e: print("get_model_price_action_10dr() " + str(e) )
     return r
 
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_price_action(uid,force_full_update):
+def set_model_price_action_10dr(uid,force_full_update):
     #-------------------------------------------------------------------
     r = 0
     try:
         ########################################################################
         # (2.1) Define names of column in use by the model
         ########################################################################
-        model_column = 'price_instruments_data.price_action_20d'
-        model_tp_column = 'price_instruments_data.price_action_20d_tp'
-        model_score_column = 'instruments.score_price_action_20d'
+        model_column = 'price_instruments_data.price_action_10dr'
+        model_tp_column = 'price_instruments_data.price_action_10dr_tp'
+        model_score_column = 'instruments.score_price_action_10dr'
         #-----------------------------------------------------------------------
 
         day_to_process = 400
@@ -165,7 +165,7 @@ def set_model_price_action(uid,force_full_update):
                 ########################################################################
                 # (3) Define function that calc the model target price
                 ########################################################################
-                model_tp = get_model_price_action(uid,last_date)
+                model_tp = get_model_price_action_10dr(uid,last_date)
                 print( str(model_tp) + ' ::: ' + str(last_date) + ' ::: ' + str(selected_date) )
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
@@ -193,7 +193,7 @@ def set_model_price_action(uid,force_full_update):
         cr.close()
         connection.close()
 
-    except Exception as e: print("set_model_price_action() " + str(e) )
+    except Exception as e: print("set_model_price_action_10dr() " + str(e) )
     return r
 
 
@@ -226,7 +226,7 @@ def get_price_action_model_data(symbol, selected_date):
     r = 0
     try:
         date_end = selected_date
-        date_start = selected_date - timedelta(days=20)
+        date_start = selected_date - timedelta(days=10)
         date_start_str = date_start.strftime("%Y%m%d")
         date_end_str = date_end.strftime("%Y%m%d")
 
@@ -246,9 +246,9 @@ def get_price_action_model_data(symbol, selected_date):
         b = day_avg_vol_up / day_avg_vol_down
         # (a + b) / 2
         if c != 0:
-            r = (a + b + c) / 3
+            r = ( (a + (b*3) + (c*2) ) / 6 )*(-1)
         else:
-            r = (a + b) / 2
+            r = ( (a + (b*3) ) / 4 )*(-1)
 
     except Exception as e: print(e)
     return r
