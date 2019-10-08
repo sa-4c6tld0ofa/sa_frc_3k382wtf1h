@@ -83,6 +83,8 @@ def get_model_price_action(uid,date_str):
         cr.close()
         connection.close()
 
+        print(str(symbol) + ' ::: ' + str(date_str) + ' ::: ' + str(price_close) + ' ::: stdev=' + str(stdev_st) )
+
     except Exception as e: print("get_model_price_action() " + str(e) )
     return r
 
