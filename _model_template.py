@@ -102,7 +102,7 @@ def set_model_{template}(uid,force_full_update):
         model_score_column = 'instruments.score_ma10'
         #-----------------------------------------------------------------------
 
-        day_to_process = 400
+        day_to_process = 370
         score = 0
 
         import pymysql.cursors

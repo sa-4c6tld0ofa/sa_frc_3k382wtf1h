@@ -100,7 +100,7 @@ def set_model_7d_trend(uid,force_full_update):
         model_score_column = 'instruments.score_7dtrend'
         #-----------------------------------------------------------------------
 
-        day_to_process = 400
+        day_to_process = 370
         score = 0
 
         import pymysql.cursors

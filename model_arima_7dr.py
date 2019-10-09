@@ -92,7 +92,7 @@ def set_model_arima_7dr(uid,force_full_update):
         model_score_column = 'instruments.score_arima_7dr'
         #-----------------------------------------------------------------------
 
-        day_to_process = 400
+        day_to_process = 370
         score = 0
 
         import pymysql.cursors

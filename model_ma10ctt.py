@@ -95,7 +95,7 @@ def set_model_ma10ctt(uid,force_full_update):
         model_score_column = 'instruments.score_ma10ctt'
         #-----------------------------------------------------------------------
 
-        day_to_process = 400
+        day_to_process = 370
         score = 0
 
         import pymysql.cursors
