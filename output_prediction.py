@@ -283,7 +283,7 @@ def set_all_prediction_model_target_price_n_score(uid,force_full_update):
     except Exception as e: print("set_all_prediction_model_target_price_n_score() " + str(e) )
 
 
-def output_prediction(force_full_update,uid):
+def output_prediction(force_full_update,uid,order):
     try:
 
         import pymysql.cursors
@@ -297,7 +297,7 @@ def output_prediction(force_full_update,uid):
         cr = connection.cursor(pymysql.cursors.SSCursor)
 
         if uid == 0:
-            sql = "SELECT uid FROM symbol_list WHERE symbol NOT LIKE '%"+ get_portf_suffix() +"%' AND disabled=0 ORDER BY symbol"
+            sql = "SELECT uid FROM symbol_list WHERE symbol NOT LIKE '%"+ get_portf_suffix() +"%' AND disabled=0 ORDER BY symbol "+ order
         else:
             sql = "SELECT uid FROM symbol_list WHERE uid = " + str(uid)
 
