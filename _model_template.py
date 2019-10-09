@@ -9,6 +9,7 @@ import time
 from datetime import timedelta
 import csv
 from pathlib import Path
+import gc
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -173,7 +174,7 @@ def set_model_{template}(uid,force_full_update):
                 connection.commit()
                 r = model_tp
                 cr_u.close()
-
+            gc.collect()
         model_score = 0
         if force_full_update == False:
             sql = "SELECT "+ str(model_score_column) +" FROM instruments WHERE symbol = '"+ str(symbol) +"'"
@@ -187,10 +188,9 @@ def set_model_{template}(uid,force_full_update):
         sql = "UPDATE instruments SET " + str(model_score_column) + " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
         cr.execute(sql)
         connection.commit()
-
         cr_c.close()
         cr.close()
         connection.close()
-
+        gc.collect()
     except Exception as e: print("set_model_{template}() " + str(e) )
     return r
