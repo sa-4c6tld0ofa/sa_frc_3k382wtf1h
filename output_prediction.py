@@ -9,7 +9,7 @@ import time
 from datetime import timedelta
 import csv
 from pathlib import Path
-import gc
+
 
 ############################################################################################
 # There is 6 steps to follow in this file.
@@ -78,7 +78,7 @@ def clear_chart_data(s):
         sql = "DELETE FROM chart_data WHERE symbol = '"+ str(s) +"'"
         cr.execute(sql)
         connection.commit()
-        gc.collect()
+        
         cr.close()
         connection.close()
     except Exception as e: print(e)
@@ -97,7 +97,7 @@ def clear_trades(s):
         sql = "DELETE FROM trades WHERE symbol = '"+ str(s) +"'"
         cr.execute(sql)
         connection.commit()
-        gc.collect()
+        
         cr.close()
         connection.close()
 
@@ -121,7 +121,7 @@ def get_instr_decimal_places(s):
         for row in rs: r = row[0]
         cr.close()
         connection.close()
-        gc.collect()
+        
 
     except Exception as e: print("get_instr_decimal_places() " + str(e) )
     return r
@@ -198,7 +198,7 @@ def compute_target_price(uid,force_full_update):
             score_price_action_10d = row[14]
             score_price_action_10dr = row[15]
             #----------------------------------------------------------------------------------------
-        gc.collect()
+        
 
         #############################################################################################
         # (4) Add model to the model_list
@@ -250,7 +250,7 @@ def compute_target_price(uid,force_full_update):
 
         cr.close()
         connection.close()
-        gc.collect()
+        
 
     except Exception as e: print("compute_target_price() " + str(e) )
 
@@ -306,7 +306,7 @@ def output_prediction(force_full_update,uid):
         for row in rs:
             uid = row[0]
             set_all_prediction_model_target_price_n_score(uid,force_full_update)
-            gc.collect()
+            
 
         cr.close()
         connection.close()
