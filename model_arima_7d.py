@@ -9,7 +9,7 @@ import time
 from datetime import timedelta
 import csv
 from pathlib import Path
-
+import gc
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -133,7 +133,7 @@ def set_model_arima_7d(uid,force_full_update):
                 cr_u.execute(sql_u)
                 connection.commit()
                 r = last_model_tp
-            
+            gc.collect()
         model_score = 0
         if force_full_update == False:
             sql = "SELECT "+ str(model_score_column) +" FROM instruments WHERE symbol = '"+ str(symbol) +"'"
@@ -152,6 +152,6 @@ def set_model_arima_7d(uid,force_full_update):
         cr_c.close()
         cr.close()
         connection.close()
-        
+        gc.collect()
     except Exception as e: print("set_model_arima_7d() " + str(e) )
     return r

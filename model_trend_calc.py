@@ -8,7 +8,7 @@ import os
 import datetime
 import time
 from datetime import timedelta
-
+import gc
 
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
@@ -82,7 +82,7 @@ class trend_data:
 
             cr.close()
             connection.close()
-            
+            gc.collect()
 
         except Exception as e: print( str(symbol) + " ::: " + str(e) )
 
