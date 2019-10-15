@@ -84,9 +84,9 @@ def get_model_price_action_10d(uid,date_str):
         cr.close()
         connection.close()
 
-        print(str(symbol) + ' ::: '+ str(r) +' = ' + str(date_str) + ' ::: ' + str(price_close) + ' ::: stdev=' + str(stdev_st) )
+        debug(str(symbol) + ' ::: '+ str(r) +' = ' + str(date_str) + ' ::: ' + str(price_close) + ' ::: stdev=' + str(stdev_st) )
 
-    except Exception as e: print("get_model_price_action_10d() " + str(e) )
+    except Exception as e: debug("get_model_price_action_10d() " + str(e) )
     return r
 
 ########################################################################
@@ -152,7 +152,7 @@ def set_model_price_action_10d(uid,force_full_update):
                 if (previous_price < last_price) and (type_of_trade == 'b'): score = score + 0.01
                 if (previous_price < last_price) and (type_of_trade == 's'):
                     if score > 0: score = score - 0.01
-                print("### score calc "+ str(model_score_column) +": current score = " + str(score) )
+                debug("### score calc "+ str(model_score_column) +": current score = " + str(score) )
 
             if model_tp == 0:
                 ########################################################################
@@ -169,7 +169,7 @@ def set_model_price_action_10d(uid,force_full_update):
                 # (3) Define function that calc the model target price
                 ########################################################################
                 model_tp = get_model_price_action_10d(uid,last_date)
-                print( str(model_tp) + ' ::: ' + str(last_date) + ' ::: ' + str(selected_date) )
+                debug( str(model_tp) + ' ::: ' + str(last_date) + ' ::: ' + str(selected_date) )
                 #-----------------------------------------------------------------------
                 cr_u = connection.cursor(pymysql.cursors.SSCursor)
                 sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) + " = " + str( model_tp ) + " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
@@ -184,9 +184,9 @@ def set_model_price_action_10d(uid,force_full_update):
             cr.execute(sql)
             rs = cr.fetchall()
             for row in rs: model_score = row[0]
-        print("### Total score calc "+ str(model_score_column) +": " + str(model_score) + " + " + str(score) )
+        debug("### Total score calc "+ str(model_score_column) +": " + str(model_score) + " + " + str(score) )
         model_score = round(model_score + score,2)
-        print("### Total score "+ str(model_score_column) +": " + str(model_score) )
+        debug("### Total score "+ str(model_score_column) +": " + str(model_score) )
 
         sql = "UPDATE instruments SET " + str(model_score_column) + " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
         cr.execute(sql)
@@ -196,7 +196,7 @@ def set_model_price_action_10d(uid,force_full_update):
         cr.close()
         connection.close()
         gc.collect()
-    except Exception as e: print("set_model_price_action_10d() " + str(e) )
+    except Exception as e: debug("set_model_price_action_10d() " + str(e) )
     return r
 
 
@@ -216,13 +216,13 @@ def get_data_day(w,symbol,date_start,date_end):
         if w == 'avgu': sql = 'SELECT AVG(change_1d) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" AND change_1d >0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
         if w == 'avgd': sql = 'SELECT AVG(change_1d) FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" AND change_1d <0 AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
         if w == 's': sql = 'SELECT sentiment_1d FROM price_instruments_data WHERE symbol="'+ str(symbol) +'" AND date >=' + str(date_start) + ' AND date <=' + str(date_end)
-        print(sql)
+        debug(sql)
         cr.execute(sql)
         rs = cr.fetchall()
         for row in rs: r = row[0]
         cr.close()
         connection.close()
-    except Exception as e: print(e)
+    except Exception as e: debug(e)
     return r
 
 def get_price_action_model_data(symbol, selected_date):
@@ -253,5 +253,5 @@ def get_price_action_model_data(symbol, selected_date):
         else:
             r = (a + (b*2) ) / 3
 
-    except Exception as e: print(e)
+    except Exception as e: debug(e)
     return r

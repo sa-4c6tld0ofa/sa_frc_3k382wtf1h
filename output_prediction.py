@@ -81,7 +81,7 @@ def clear_chart_data(s):
         cr.close()
         connection.close()
         gc.collect()
-    except Exception as e: print(e)
+    except Exception as e: debug(e)
 
 def clear_trades(s):
     try:
@@ -101,7 +101,7 @@ def clear_trades(s):
         cr.close()
         connection.close()
 
-    except Exception as e: print(e)
+    except Exception as e: debug(e)
 
 def get_instr_decimal_places(s):
     r = 5
@@ -123,7 +123,7 @@ def get_instr_decimal_places(s):
         connection.close()
         gc.collect()
 
-    except Exception as e: print("get_instr_decimal_places() " + str(e) )
+    except Exception as e: debug("get_instr_decimal_places() " + str(e) )
     return r
 
 def compute_target_price(uid,force_full_update):
@@ -234,7 +234,7 @@ def compute_target_price(uid,force_full_update):
 
         if force_full_update:
             sql = "UPDATE price_instruments_data SET price_instruments_data.target_price = CAST("+ selected_model_column +" AS DECIMAL(20,"+ str( get_instr_decimal_places(symbol) ) +")) WHERE price_instruments_data.symbol = '"+ symbol + "'"
-            print('### ::: ' + sql)
+            debug('### ::: ' + sql)
             cr.execute(sql); connection.commit()
             clear_chart_data(symbol)
             clear_trades(symbol)
@@ -252,7 +252,7 @@ def compute_target_price(uid,force_full_update):
         connection.close()
         gc.collect()
 
-    except Exception as e: print("compute_target_price() " + str(e) )
+    except Exception as e: debug("compute_target_price() " + str(e) )
 
 
 def set_all_prediction_model_target_price_n_score(uid,force_full_update):
@@ -280,7 +280,7 @@ def set_all_prediction_model_target_price_n_score(uid,force_full_update):
         #target_price get the value of highest score model
         compute_target_price(uid,force_full_update)
 
-    except Exception as e: print("set_all_prediction_model_target_price_n_score() " + str(e) )
+    except Exception as e: debug("set_all_prediction_model_target_price_n_score() " + str(e) )
 
 
 def output_prediction(force_full_update,uid,order):
@@ -311,4 +311,4 @@ def output_prediction(force_full_update,uid,order):
         connection.close()
         gc.collect()
 
-    except Exception as e: print("output_prediction() " + str(e) )
+    except Exception as e: debug("output_prediction() " + str(e) )

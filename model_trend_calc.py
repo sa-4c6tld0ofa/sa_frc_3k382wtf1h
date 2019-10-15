@@ -84,7 +84,7 @@ class trend_data:
             connection.close()
             gc.collect()
 
-        except Exception as e: print( str(symbol) + " ::: " + str(e) )
+        except Exception as e: debug( str(symbol) + " ::: " + str(e) )
 
     def get_3d_trend(self):
         return trend_data.ta_3d_trend

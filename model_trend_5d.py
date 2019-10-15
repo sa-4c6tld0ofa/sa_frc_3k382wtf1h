@@ -83,7 +83,7 @@ def get_model_5d_trend(uid,date_str):
         connection.close()
     #---------------------------------------------------------------------------
 
-    except Exception as e: print("get_model_price_5d_trend() " + str(e) )
+    except Exception as e: debug("get_model_price_5d_trend() " + str(e) )
     return r
 
 ########################################################################
@@ -147,7 +147,7 @@ def set_model_5d_trend(uid,force_full_update):
                 if (previous_price < last_price) and (type_of_trade == 'b'): score = score + 0.01
                 if (previous_price < last_price) and (type_of_trade == 's'):
                     if score > 0: score = score - 0.01
-                print("### score calc "+ str(model_score_column) +": current score = " + str(score) )
+                debug("### score calc "+ str(model_score_column) +": current score = " + str(score) )
 
             if model_tp == 0:
                 trend = trend_data(symbol, last_date)
@@ -174,9 +174,9 @@ def set_model_5d_trend(uid,force_full_update):
             cr.execute(sql)
             rs = cr.fetchall()
             for row in rs: model_score = row[0]
-        print("### Total score calc "+ str(model_score_column) +": " + str(model_score) + " + " + str(score) )
+        debug("### Total score calc "+ str(model_score_column) +": " + str(model_score) + " + " + str(score) )
         model_score = round(model_score + score,2)
-        print("### Total score "+ str(model_score_column) +": " + str(model_score) )
+        debug("### Total score "+ str(model_score_column) +": " + str(model_score) )
 
         sql = "UPDATE instruments SET " + str(model_score_column) + " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
         cr.execute(sql)
@@ -186,5 +186,5 @@ def set_model_5d_trend(uid,force_full_update):
         cr.close()
         connection.close()
         gc.collect()
-    except Exception as e: print("set_model_5d_trend() " + str(e) )
+    except Exception as e: debug("set_model_5d_trend() " + str(e) )
     return r

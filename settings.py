@@ -20,3 +20,10 @@ class sa_path:
 
 def get_portf_suffix():
     return "PRF:"
+
+def debug(txt):
+    enable_debug = False
+    try:
+        if enable_debug: print(txt)
+    except:
+        pass
