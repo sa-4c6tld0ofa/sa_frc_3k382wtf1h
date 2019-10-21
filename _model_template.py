@@ -75,7 +75,7 @@ def get_model_{template}(uid,date_str):
             price_close = row[0]
             model_data = row[1]
 
-        # Model Logic
+        # Model Logic: Set model_tp = price_close to not place trade (ignore)
         #-----------------------------------------------------------------------
         if model_data <= price_close: model_tp = price_close + stdev_st
         if model_data > price_close: model_tp = price_close - stdev_st
