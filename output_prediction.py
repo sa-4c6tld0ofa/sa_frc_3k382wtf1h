@@ -58,9 +58,9 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 
 def clear_chart_data(s):
     """
-    Desc
+    Clear chart_data table for a given instrument
     Args:
-        None
+        String: Instrument  symbol
     Returns:
         None
     """
@@ -82,9 +82,9 @@ def clear_chart_data(s):
 
 def clear_trades(s):
     """
-    Desc
+    Clear trade data for a given instrument
     Args:
-        None
+        String: Instrument symbol
     Returns:
         None
     """
@@ -107,11 +107,11 @@ def clear_trades(s):
 
 def get_instr_decimal_places(s):
     """
-    Desc
+    Get specified instrument decimal places
     Args:
-        None
+        String: Instrument symbol
     Returns:
-        None
+        Integer: Decimal place
     """
     r = 5
     import pymysql.cursors
@@ -134,9 +134,10 @@ def get_instr_decimal_places(s):
 
 def compute_target_price(uid,force_full_update):
     """
-    Desc
+    Calculate the target price according to various model score
     Args:
-        None
+        Integer: Instrument unique id
+        Boolean: If force full update, update regardless of flag is_ta_calc
     Returns:
         None
     """
@@ -267,9 +268,10 @@ def compute_target_price(uid,force_full_update):
 
 def set_all_prediction_model_target_price_n_score(uid,force_full_update):
     """
-    Desc
+    Set all prediction model target price and calculate score
     Args:
-        None
+        Integer: Instrument unique id
+        Booelan: Force full update regardless of the flag is_ta_calc if True
     Returns:
         None
     """
@@ -299,9 +301,11 @@ def set_all_prediction_model_target_price_n_score(uid,force_full_update):
 
 def output_prediction(force_full_update,uid,order):
     """
-    Desc
+    Main function to get prediction calculated and update tables in database
     Args:
-        None
+        Boolean: if True, update tables regardless of flag is_ta_calc
+        Integer: Instrument unique id
+        String: order of update desc, asc. by symbol.
     Returns:
         None
     """

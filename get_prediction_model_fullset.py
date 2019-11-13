@@ -1,9 +1,9 @@
 """ Calculate prediction model fullset """
-from output_prediction import *
+from output_prediction import output_prediction
 
-set_of_data_uid = 0
-calc_all_data = True
-order = 'asc'
+SET_OF_DATA_UID = 0
+CALC_ALL_DATA = True
+ORDER = 'asc'
 
 for i in range(2):
-    output_prediction(calc_all_data,set_of_data_uid,order)
+    output_prediction(CALC_ALL_DATA, SET_OF_DATA_UID, ORDER)

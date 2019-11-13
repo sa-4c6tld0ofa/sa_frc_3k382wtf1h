@@ -1,27 +1,28 @@
 """ Model trend calculation """
 import sys
 import os
-import datetime
-import time
-from datetime import timedelta
+import csv
+from pathlib import Path
 import gc
-
-pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.abspath(pdir) )
-from settings import *
-sett = SmartAlphaPath()
-
-sys.path.append(os.path.abspath( sett.get_path_pwd() ))
-from sa_access import *
-access_obj = sa_db_access()
-
-db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access_obj.db_name(); db_srv = access_obj.db_server()
+import pymysql.cursors
+PDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(PDIR))
+from settings import SmartAlphaPath, debug
+SETT = SmartAlphaPath()
+sys.path.append(os.path.abspath(SETT.get_path_pwd()))
+from sa_access import sa_db_access
+ACCESS_OBJ = sa_db_access()
+DB_USR = ACCESS_OBJ.username()
+DB_PWD = ACCESS_OBJ.password()
+DB_NAME = ACCESS_OBJ.db_name()
+DB_SRV = ACCESS_OBJ.db_server()
 
 class trend_data:
     """
-    Desc
+    price trend data calculation
     Args:
-        None
+        String: Instrument symbol
+        String: Date in string format YYYYMMDD
     """
     ta_3d_trend = ''
     ta_5d_trend = ''
@@ -33,11 +34,10 @@ class trend_data:
         ta_5d_count_up = 0 ; ta_5d_count_down = 0
         ta_7d_count_up = 0 ; ta_7d_count_down = 0
 
-        import pymysql.cursors
-        connection = pymysql.connect(host=db_srv,
-                                     user=db_usr,
-                                     password=db_pwd,
-                                     db=db_name,
+        connection = pymysql.connect(host=DB_SRV,
+                                     user=DB_USR,
+                                     password=DB_PWD,
+                                     db=DB_NAME,
                                      charset='utf8mb4',
                                      cursorclass=pymysql.cursors.DictCursor)
         cr = connection.cursor(pymysql.cursors.SSCursor)

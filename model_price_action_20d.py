@@ -1,27 +1,21 @@
 """ Model price action 20-day """
 import sys
 import os
-import datetime
-import time
-from datetime import timedelta
 import csv
 from pathlib import Path
 import gc
-
-pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.abspath(pdir) )
-from settings import *
-sett = SmartAlphaPath()
-
-sys.path.append(os.path.abspath( sett.get_path_pwd() ))
-from sa_access import *
-access_obj = sa_db_access()
-
-sys.path.append(os.path.abspath(sett.get_path_core() ))
-from get_instr_perf_summ import *
-from sa_numeric import *
-
-db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access_obj.db_name(); db_srv = access_obj.db_server()
+import pymysql.cursors
+PDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(PDIR))
+from settings import SmartAlphaPath, debug
+SETT = SmartAlphaPath()
+sys.path.append(os.path.abspath(SETT.get_path_pwd()))
+from sa_access import sa_db_access
+ACCESS_OBJ = sa_db_access()
+DB_USR = ACCESS_OBJ.username()
+DB_PWD = ACCESS_OBJ.password()
+DB_NAME = ACCESS_OBJ.db_name()
+DB_SRV = ACCESS_OBJ.db_server()
 
 ######################################################################################################################################
 # Notes to add additional model to the system:
@@ -36,11 +30,11 @@ db_usr = access_obj.username(); db_pwd = access_obj.password(); db_name = access
 
 def get_model_price_action_20d(uid,date_str):
     """
-    Desc
+    Get model price prediction
     Args:
-        None
+        Integer: Instrument unique id
     Returns:
-        None
+        Double: price prediction
     """
     ################################################
     # (1) Logic according to model
@@ -54,11 +48,10 @@ def get_model_price_action_20d(uid,date_str):
     model_data = 0
     model_tp = 0
 
-    import pymysql.cursors
-    connection = pymysql.connect(host=db_srv,
-                                 user=db_usr,
-                                 password=db_pwd,
-                                 db=db_name,
+    connection = pymysql.connect(host=DB_SRV,
+                                 user=DB_USR,
+                                 password=DB_PWD,
+                                 db=DB_NAME,
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -113,11 +106,10 @@ def set_model_price_action_20d(uid,force_full_update):
     day_to_process = 370
     score = 0
 
-    import pymysql.cursors
-    connection = pymysql.connect(host=db_srv,
-                                 user=db_usr,
-                                 password=db_pwd,
-                                 db=db_name,
+    connection = pymysql.connect(host=DB_SRV,
+                                 user=DB_USR,
+                                 password=DB_PWD,
+                                 db=DB_NAME,
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
 
@@ -215,10 +207,10 @@ def get_data_day(w,symbol,date_start,date_end):
         None
     """
     r = 0
-    connection = pymysql.connect(host=db_srv,
-                                 user=db_usr,
-                                 password=db_pwd,
-                                 db=db_name,
+    connection = pymysql.connect(host=DB_SRV,
+                                 user=DB_USR,
+                                 password=DB_PWD,
+                                 db=DB_NAME,
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
     cr = connection.cursor(pymysql.cursors.SSCursor)
