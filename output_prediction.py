@@ -1,8 +1,4 @@
-""" """
-# Copyright (c) 2018-present, Taatu Ltd.
-#
-# This source code is licensed under the MIT license found in the
-# LICENSE file in the root directory of this source tree.
+""" Main module to calculate prediction model """
 import sys
 import os
 import datetime
@@ -46,7 +42,7 @@ from model_price_action_10dr import *
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
 from settings import *
-sett = sa_path()
+sett = SmartAlphaPath()
 
 sys.path.append(os.path.abspath( sett.get_path_pwd() ))
 from sa_access import *

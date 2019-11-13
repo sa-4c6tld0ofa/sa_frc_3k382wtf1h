@@ -1,8 +1,4 @@
-""" """
-# Copyright (c) 2018-present, Taatu Ltd.
-#
-# This source code is licensed under the MIT license found in the
-# LICENSE file in the root directory of this source tree.
+""" Model price action 10-day """
 import sys
 import os
 import datetime
@@ -15,7 +11,7 @@ import gc
 pdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(pdir) )
 from settings import *
-sett = sa_path()
+sett = SmartAlphaPath()
 
 sys.path.append(os.path.abspath( sett.get_path_pwd() ))
 from sa_access import *
