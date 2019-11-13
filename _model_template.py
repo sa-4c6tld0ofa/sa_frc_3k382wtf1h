@@ -29,13 +29,7 @@ DB_SRV = ACCESS_OBJ.db_server()
 ###########################################################################
 
 def get_model_xxx_template_xxx(uid, last_date):
-    """
-    Desc
-    Args:
-        None
-    Returns:
-        None
-    """
+    """ xxx """
     ################################################
     # (1) Logic according to model
     # Logic as per specific to the model
@@ -91,13 +85,7 @@ def get_model_xxx_template_xxx(uid, last_date):
 # (2) Set the name of the model function
 ########################################################################
 def set_model_xxx_template_xxx(uid, force_full_update):
-    """
-    Desc
-    Args:
-        None
-    Returns:
-        None
-    """
+    """ xxx """
     #-------------------------------------------------------------------
     ret = 0
     ########################################################################

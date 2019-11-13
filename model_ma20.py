@@ -83,13 +83,7 @@ def get_model_price_ma20(uid, date_str):
 # (2) Set the name of the model function
 ########################################################################
 def set_model_ma20(uid, force_full_update):
-    """
-    Desc
-    Args:
-        None
-    Returns:
-        None
-    """
+    """ xxx """
     ret = 0
     ########################################################################
     # (2.1) Define names of column in use by the model

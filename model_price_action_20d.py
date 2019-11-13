@@ -81,13 +81,7 @@ def get_model_price_action_20d(uid, date_str):
 # (2) Set the name of the model function
 ########################################################################
 def set_model_price_action_20d(uid, force_full_update):
-    """
-    Desc
-    Args:
-        None
-    Returns:
-        None
-    """
+    """ xxx """
     #-------------------------------------------------------------------
     ret = 0
     ########################################################################
@@ -225,13 +219,7 @@ def set_model_price_action_20d(uid, force_full_update):
 
 
 def get_data_day(what, symbol, date_start, date_end):
-    """
-    Desc
-    Args:
-        None
-    Returns:
-        None
-    """
+    """ xxx """
     ret = 0
     connection = pymysql.connect(host=DB_SRV,
                                  user=DB_USR,
@@ -270,13 +258,7 @@ def get_data_day(what, symbol, date_start, date_end):
     return ret
 
 def get_price_action_model_data(symbol, selected_date):
-    """
-    Desc
-    Args:
-        None
-    Returns:
-        None
-    """
+    """ xxx """
     ret = 0
     date_end = selected_date
     date_start = selected_date - timedelta(days=20)

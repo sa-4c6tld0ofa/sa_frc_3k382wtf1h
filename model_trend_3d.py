@@ -74,13 +74,7 @@ def get_model_3d_trend(uid, date_str):
 # (2) Set the name of the model function
 ########################################################################
 def set_model_3d_trend(uid, force_full_update):
-    """
-    Desc
-    Args:
-        None
-    Returns:
-        None
-    """
+    """ xxx """
     #-------------------------------------------------------------------
     ret = 0
     ########################################################################
