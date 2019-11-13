@@ -28,7 +28,7 @@ DB_SRV = ACCESS_OBJ.db_server()
 # 3. Follow instruction in the following py file as well as for output_prediction.py
 ###########################################################################
 
-def get_model_xxx_template_xxx(uid):
+def get_model_xxx_template_xxx(uid, last_date):
     """
     Desc
     Args:
@@ -191,7 +191,7 @@ def set_model_xxx_template_xxx(uid, force_full_update):
             ########################################################################
             # (3) Define function that calc the model target price
             ########################################################################
-            model_tp = get_model_xxx_template_xxx(uid)
+            model_tp = get_model_xxx_template_xxx(uid, last_date)
             #-----------------------------------------------------------------------
             cr_u = connection.cursor(pymysql.cursors.SSCursor)
             sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) +\

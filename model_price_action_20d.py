@@ -1,9 +1,8 @@
 """ Model price action 20-day """
 import sys
 import os
-import csv
-from pathlib import Path
 import gc
+from datetime import timedelta
 import pymysql.cursors
 PDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(PDIR))
@@ -16,17 +15,6 @@ DB_USR = ACCESS_OBJ.username()
 DB_PWD = ACCESS_OBJ.password()
 DB_NAME = ACCESS_OBJ.db_name()
 DB_SRV = ACCESS_OBJ.db_server()
-
-######################################################################################################################################
-# Notes to add additional model to the system:
-# {} Replace {template} with the name of the model
-# a. Add a column in table "price_instruments_data" containing value of indicator
-# b. Develop indicator. Add this py file to sa_data_collection in folder named "core", available for reference in ta_main_update_data.py
-# c. In sa_data_collection repository, reference the new indicator in file ta_main_update_data.py in function get_update_instr_data()
-# 1. Add a column in table "instruments" named score_modelXX
-# 2. Add a column in table "price_instruments_data" named modelXX_tp
-# 3. Follow instruction in the following py file as well as for output_prediction.py
-######################################################################################################################################
 
 def get_model_price_action_20d(uid,date_str):
     """
