@@ -276,9 +276,12 @@ def get_price_action_model_data(symbol, selected_date):
     #5. sentiment_1d
     ccc = get_data_day('s', symbol, date_start_str, date_end_str)
     # a = days_up / days_down
-    aaa = day_up / day_down
+    if day_down != 0:
+        aaa = day_up / day_down
     # b = vol_days_up / vol_days_down
-    bbb = day_avg_vol_up / day_avg_vol_down
+    if day_avg_vol_down != 0:
+        bbb = day_avg_vol_up / day_avg_vol_down
+
     # (a + b) / 2
     if ccc != 0:
         ret = (aaa + bbb + ccc) / 3
