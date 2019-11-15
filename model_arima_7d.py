@@ -113,6 +113,7 @@ def set_model_arima_7d(uid, force_full_update):
         for row in rs_c:
             model_prediction_tp = row[0]
             previous_price = row[1]
+        cr_c.close()
 
 
         if model_prediction_tp != 0 and previous_price != 0:
@@ -169,8 +170,6 @@ def set_model_arima_7d(uid, force_full_update):
     str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
     cursor.execute(sql)
     connection.commit()
-
-    cr_c.close()
     cursor.close()
     connection.close()
     gc.collect()
