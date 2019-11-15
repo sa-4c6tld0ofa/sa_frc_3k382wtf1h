@@ -3,7 +3,7 @@ import sys
 import os
 import gc
 import pymysql.cursors
-from model_trend_calc import trend_data
+from model_trend_calc import TrendData
 PDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(PDIR))
 from settings import SmartAlphaPath, debug
@@ -114,6 +114,7 @@ def set_model_7d_trend(uid, force_full_update):
     sql = sql_selection
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         symbol = row[0]
         last_date = row[1].strftime('%Y%m%d')
@@ -155,7 +156,7 @@ def set_model_7d_trend(uid, force_full_update):
                   ": current score = " + str(score))
 
         if model_tp == 0:
-            trend = trend_data(symbol, last_date)
+            trend = TrendData(symbol, last_date)
             trend_3d_value = trend.get_3d_trend()
             trend_5d_value = trend.get_5d_trend()
             trend_7d_value = trend.get_7d_trend()

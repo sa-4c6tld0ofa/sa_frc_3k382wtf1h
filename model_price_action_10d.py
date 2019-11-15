@@ -122,6 +122,7 @@ def set_model_price_action_10d(uid, force_full_update):
     sql = sql_selection
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         symbol = row[0]
         selected_date = row[1]

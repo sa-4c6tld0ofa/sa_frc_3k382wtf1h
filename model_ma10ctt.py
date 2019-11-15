@@ -122,6 +122,7 @@ def set_model_ma10ctt(uid, force_full_update):
     sql = sql_selection
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         symbol = row[0]
         last_date = row[1].strftime('%Y%m%d')
@@ -141,7 +142,7 @@ def set_model_ma10ctt(uid, force_full_update):
         for row in rs_c:
             model_prediction_tp = row[0]
             previous_price = row[1]
-
+        cr_c.close()
 
         if model_prediction_tp != 0 and previous_price != 0:
             type_of_trade = ''
@@ -194,8 +195,6 @@ def set_model_ma10ctt(uid, force_full_update):
     " = " + str(model_score) + " WHERE symbol = '"+ str(symbol) +"'"
     cursor.execute(sql)
     connection.commit()
-
-    cr_c.close()
     cursor.close()
     connection.close()
     gc.collect()
