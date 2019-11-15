@@ -49,6 +49,7 @@ def get_model_price_action_10d(uid, date_str):
     "WHERE symbol_list.uid = " + str(uid)
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         stdev_st = row[0]
         symbol = row[1]

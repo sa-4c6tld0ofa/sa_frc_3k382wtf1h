@@ -46,6 +46,7 @@ def get_model_7d_trend(uid, date_str):
     "WHERE symbol_list.uid = " + str(uid)
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         symbol = row[0]
         stdev_st = row[1]

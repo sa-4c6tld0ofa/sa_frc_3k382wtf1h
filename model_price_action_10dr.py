@@ -50,6 +50,7 @@ def get_model_price_action_10dr(uid, date_str):
     "symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         stdev_st = row[0]
         symbol = row[1]

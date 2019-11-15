@@ -56,6 +56,7 @@ def get_model_xxx_template_xxx(uid, last_date):
     "WHERE symbol_list.uid = " + str(uid)
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         stdev_st = row[0]
         symbol = row[1]
