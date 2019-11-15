@@ -93,6 +93,7 @@ def set_model_arima_7d(uid, force_full_update):
     sql = sql_selection
     cursor.execute(sql)
     res = cursor.fetchall()
+    symbol = ''
     for row in res:
         symbol = row[0]
         last_date = row[1].strftime('%Y%m%d')
