@@ -276,10 +276,11 @@ def get_price_action_model_data(symbol, selected_date):
     bbb = 0
 
     # a = days_up / days_down
-    if day_down != 0 and day_down is not None:
+    if day_down != 0 and day_down is not None and day_up is not None:
         aaa = day_up / day_down
     # b = vol_days_up / vol_days_down
-    if day_avg_vol_down != 0 and day_avg_vol_down is not None:
+    if (day_avg_vol_down != 0 and day_avg_vol_down is not None and
+            day_avg_vol_up is not None):
         bbb = day_avg_vol_up / day_avg_vol_down
 
     # (a + b) / 2
