@@ -14,6 +14,7 @@ from ta_instr_sum import get_instr_sum
 from ta_gen_chart_data import gen_chart
 from get_frc_pnl import get_forecast_pnl
 from get_trades import get_trades
+from logging import log_this
 sys.path.append(os.path.abspath(SETT.get_path_pwd()))
 from sa_access import sa_db_access
 ACCESS_OBJ = sa_db_access()
@@ -325,6 +326,7 @@ def set_all_prediction_model_target_price_n_score(uid, force_full_update):
     Returns:
         None
     """
+    log_this('2. set_all_prediction_model_target_price_n_score (uid'+ str(uid) +')', 0)
     #Set the score and return model_tp
     ##############################################################################################
     # (6) Call function for each model.
@@ -347,6 +349,7 @@ def set_all_prediction_model_target_price_n_score(uid, force_full_update):
 
     #target_price get the value of highest score model
     compute_target_price(uid, force_full_update)
+    log_this('2. set_all_prediction_model_target_price_n_score (uid'+ str(uid) +')', 1)
 
 
 def output_prediction(force_full_update, uid, order):
@@ -359,6 +362,7 @@ def output_prediction(force_full_update, uid, order):
     Returns:
         None
     """
+    log_this('2. output_prediction' , 0)
     connection = pymysql.connect(host=DB_SRV,
                                  user=DB_USR,
                                  password=DB_PWD,
@@ -383,3 +387,4 @@ def output_prediction(force_full_update, uid, order):
     cursor.close()
     connection.close()
     gc.collect()
+    log_this('2. output_prediction' , 1)
