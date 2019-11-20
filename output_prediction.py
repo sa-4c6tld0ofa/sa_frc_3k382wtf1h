@@ -14,7 +14,7 @@ from ta_instr_sum import get_instr_sum
 from ta_gen_chart_data import gen_chart
 from get_frc_pnl import get_forecast_pnl
 from get_trades import get_trades
-from logging import log_this
+from sa_logging import log_this
 sys.path.append(os.path.abspath(SETT.get_path_pwd()))
 from sa_access import sa_db_access
 ACCESS_OBJ = sa_db_access()
