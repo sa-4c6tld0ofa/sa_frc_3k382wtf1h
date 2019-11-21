@@ -326,7 +326,6 @@ def set_all_prediction_model_target_price_n_score(uid, force_full_update):
     Returns:
         None
     """
-    log_this('2. set_all_prediction_model_target_price_n_score (uid'+ str(uid) +')', 0)
     #Set the score and return model_tp
     ##############################################################################################
     # (6) Call function for each model.
@@ -349,8 +348,6 @@ def set_all_prediction_model_target_price_n_score(uid, force_full_update):
 
     #target_price get the value of highest score model
     compute_target_price(uid, force_full_update)
-    log_this('2. set_all_prediction_model_target_price_n_score (uid'+ str(uid) +')', 1)
-
 
 def output_prediction(force_full_update, uid, order):
     """
