@@ -28,7 +28,7 @@ DB_SRV = ACCESS_OBJ.db_server()
 # 3. Follow instruction in the following py file as well as for output_prediction.py
 ###########################################################################
 
-def get_model_xxx_template_xxx(uid, last_date):
+def get_model_xxx_template_xxx(uid, last_date, connection):
     """ xxx """
     ################################################
     # (1) Logic according to model
@@ -42,13 +42,6 @@ def get_model_xxx_template_xxx(uid, last_date):
     price_close = 0
     model_data = 0
     model_tp = 0
-
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = "SELECT instruments.stdev_st, instruments.symbol FROM instruments "+\
@@ -79,13 +72,12 @@ def get_model_xxx_template_xxx(uid, last_date):
     #-----------------------------------------------------------------------
     ret = model_tp
     cursor.close()
-    connection.close()
     return ret
 
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_xxx_template_xxx(uid, force_full_update):
+def set_model_xxx_template_xxx(uid, force_full_update, connection):
     """ xxx """
     #-------------------------------------------------------------------
     ret = 0
@@ -99,13 +91,6 @@ def set_model_xxx_template_xxx(uid, force_full_update):
 
     day_to_process = 370
     score = 0
-
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     if force_full_update:
         sql_selection = "SELECT price_instruments_data.symbol, "+\
@@ -170,7 +155,7 @@ def set_model_xxx_template_xxx(uid, force_full_update):
             # (2.2) Create a function to calculate the value of the model data
             # function should contains specific parameters: symbol, date
             ########################################################################
-            model_data = xxx_Reference_to_function_get_data_xxx(symbol, selected_date)
+            model_data = xxx_Reference_to_function_get_data_xxx(symbol, selected_date, connection)
             #-----------------------------------------------------------------------
             cr_u = connection.cursor(pymysql.cursors.SSCursor)
             sql_u = "UPDATE price_instruments_data SET "+ model_column +" = "+\
@@ -181,7 +166,7 @@ def set_model_xxx_template_xxx(uid, force_full_update):
             ########################################################################
             # (3) Define function that calc the model target price
             ########################################################################
-            model_tp = get_model_xxx_template_xxx(uid, last_date)
+            model_tp = get_model_xxx_template_xxx(uid, last_date, connection)
             #-----------------------------------------------------------------------
             cr_u = connection.cursor(pymysql.cursors.SSCursor)
             sql_u = "UPDATE price_instruments_data SET " + str(model_tp_column) +\
@@ -210,6 +195,5 @@ def set_model_xxx_template_xxx(uid, force_full_update):
     cursor.execute(sql)
     connection.commit()
     cursor.close()
-    connection.close()
     gc.collect()
     return ret

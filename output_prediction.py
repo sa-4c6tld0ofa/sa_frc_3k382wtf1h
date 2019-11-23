@@ -128,7 +128,7 @@ def get_instr_decimal_places(symbol):
     gc.collect()
     return ret
 
-def compute_target_price(uid, force_full_update):
+def compute_target_price(uid, force_full_update, connection):
     """
     Calculate the target price according to various model score
     Args:
@@ -181,13 +181,6 @@ def compute_target_price(uid, force_full_update):
     score_price_action_10d = 0
     score_price_action_10dr = 0
     #------------------------------------------------------------------------------------------
-
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = "SELECT symbol from symbol_list WHERE uid = " + str(uid)
@@ -313,11 +306,10 @@ def compute_target_price(uid, force_full_update):
 
 
     cursor.close()
-    connection.close()
     gc.collect()
 
 
-def set_all_prediction_model_target_price_n_score(uid, force_full_update):
+def set_all_prediction_model_target_price_n_score(uid, force_full_update, connection):
     """
     Set all prediction model target price and calculate score
     Args:
@@ -330,24 +322,24 @@ def set_all_prediction_model_target_price_n_score(uid, force_full_update):
     ##############################################################################################
     # (6) Call function for each model.
     ##############################################################################################
-    set_model_arima_7d(uid, force_full_update)
-    set_model_ma10(uid, force_full_update)
-    set_model_ma20(uid, force_full_update)
-    set_model_ma30(uid, force_full_update)
-    set_model_ma40(uid, force_full_update)
-    set_model_ma50(uid, force_full_update)
-    set_model_ma10ctt(uid, force_full_update)
-    set_model_arima_7dr(uid, force_full_update)
-    set_model_3d_trend(uid, force_full_update)
-    set_model_5d_trend(uid, force_full_update)
-    set_model_7d_trend(uid, force_full_update)
-    set_model_price_action_20d(uid, force_full_update)
-    set_model_price_action_10d(uid, force_full_update)
-    set_model_price_action_10dr(uid, force_full_update)
+    set_model_arima_7d(uid, force_full_update, connection)
+    set_model_ma10(uid, force_full_update, connection)
+    set_model_ma20(uid, force_full_update, connection)
+    set_model_ma30(uid, force_full_update, connection)
+    set_model_ma40(uid, force_full_update, connection)
+    set_model_ma50(uid, force_full_update, connection)
+    set_model_ma10ctt(uid, force_full_update, connection)
+    set_model_arima_7dr(uid, force_full_update, connection)
+    set_model_3d_trend(uid, force_full_update, connection)
+    set_model_5d_trend(uid, force_full_update, connection)
+    set_model_7d_trend(uid, force_full_update, connection)
+    set_model_price_action_20d(uid, force_full_update, connection)
+    set_model_price_action_10d(uid, force_full_update, connection)
+    set_model_price_action_10dr(uid, force_full_update, connection)
     #--------------------------------------------------------------------------------------------
 
     #target_price get the value of highest score model
-    compute_target_price(uid, force_full_update)
+    compute_target_price(uid, force_full_update, connection)
 
 def output_prediction(force_full_update, uid, order):
     """
@@ -359,7 +351,7 @@ def output_prediction(force_full_update, uid, order):
     Returns:
         None
     """
-    log_this('2. output_prediction' , 0)
+    log_this('2. output_prediction', 0)
     connection = pymysql.connect(host=DB_SRV,
                                  user=DB_USR,
                                  password=DB_PWD,
@@ -379,9 +371,11 @@ def output_prediction(force_full_update, uid, order):
     res = cursor.fetchall()
     for row in res:
         uid = row[0]
-        set_all_prediction_model_target_price_n_score(uid, force_full_update)
+        set_all_prediction_model_target_price_n_score(uid,
+                                                      force_full_update,
+                                                      connection)
 
     cursor.close()
     connection.close()
     gc.collect()
-    log_this('2. output_prediction' , 1)
+    log_this('2. output_prediction', 1)

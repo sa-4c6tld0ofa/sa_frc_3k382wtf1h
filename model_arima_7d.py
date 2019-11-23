@@ -55,7 +55,7 @@ def get_model_price_arima_7d(uid):
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_arima_7d(uid, force_full_update):
+def set_model_arima_7d(uid, force_full_update, connection):
     """ xxx """
     ret = 0
     ########################################################################
@@ -67,12 +67,6 @@ def set_model_arima_7d(uid, force_full_update):
 
     day_to_process = 370
     score = 0
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     if force_full_update:
         sql_selection = "SELECT price_instruments_data.symbol, "+\
@@ -171,6 +165,5 @@ def set_model_arima_7d(uid, force_full_update):
     cursor.execute(sql)
     connection.commit()
     cursor.close()
-    connection.close()
     gc.collect()
     return ret

@@ -24,7 +24,7 @@ DB_SRV = ACCESS_OBJ.db_server()
 # Follow instruction in the following py file as well as for output_prediction.py
 ################################################################################
 
-def get_model_price_arima_7dr(uid, date_str):
+def get_model_price_arima_7dr(uid, date_str, connection):
     """
     Get model price prediction
     Args:
@@ -37,12 +37,6 @@ def get_model_price_arima_7dr(uid, date_str):
     # Logic as per specific to the model
     ################################################
     ret = 0
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     forc_src = SETT.get_path_src()
     file_str = forc_src+str(uid)+'f.csv'
@@ -73,14 +67,13 @@ def get_model_price_arima_7dr(uid, date_str):
         ret = float(last_price) +  (float(last_price) - float(point_forecast))
 
     cursor.close()
-    connection.close()
     #---------------------------------------------------------------------------
     return ret
 
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_arima_7dr(uid, force_full_update):
+def set_model_arima_7dr(uid, force_full_update, connection):
     """ xxx """
     ret = 0
     ########################################################################
@@ -92,12 +85,6 @@ def set_model_arima_7dr(uid, force_full_update):
 
     day_to_process = 370
     score = 0
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     if force_full_update:
         sql_selection = "SELECT price_instruments_data.symbol, "+\
@@ -168,7 +155,7 @@ def set_model_arima_7dr(uid, force_full_update):
             ########################################################################
             # (3) Define function that calc the model target price
             ########################################################################
-            last_model_tp = get_model_price_arima_7dr(uid, last_date)
+            last_model_tp = get_model_price_arima_7dr(uid, last_date, connection)
             cr_u = connection.cursor(pymysql.cursors.SSCursor)
             sql_u = "UPDATE price_instruments_data SET " +\
             str(model_tp_column) + " = " + str(last_model_tp) +\
@@ -196,6 +183,5 @@ def set_model_arima_7dr(uid, force_full_update):
     cursor.execute(sql)
     connection.commit()
     cursor.close()
-    connection.close()
     gc.collect()
     return ret

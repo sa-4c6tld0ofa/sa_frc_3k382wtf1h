@@ -17,7 +17,7 @@ DB_NAME = ACCESS_OBJ.db_name()
 DB_SRV = ACCESS_OBJ.db_server()
 
 
-def get_model_price_action_10dr(uid, date_str):
+def get_model_price_action_10dr(uid, date_str, connection):
     """
     Get model price prediction
     Args:
@@ -36,13 +36,6 @@ def get_model_price_action_10dr(uid, date_str):
     price_close = 0
     model_data = 0
     model_tp = 0
-
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = "SELECT instruments.stdev_st, instruments.symbol "+\
@@ -73,7 +66,6 @@ def get_model_price_action_10dr(uid, date_str):
     #-----------------------------------------------------------------------
     ret = model_tp
     cursor.close()
-    connection.close()
 
     debug(str(symbol) + ' ::: '+ str(ret) +' = ' + str(date_str) +\
           ' ::: ' + str(price_close) + ' ::: stdev=' + str(stdev_st))
@@ -82,7 +74,7 @@ def get_model_price_action_10dr(uid, date_str):
 ########################################################################
 # (2) Set the name of the model function
 ########################################################################
-def set_model_price_action_10dr(uid, force_full_update):
+def set_model_price_action_10dr(uid, force_full_update, connection):
     """ xxx """
     #-------------------------------------------------------------------
     ret = 0
@@ -96,13 +88,6 @@ def set_model_price_action_10dr(uid, force_full_update):
 
     day_to_process = 370
     score = 0
-
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
 
     if force_full_update:
         sql_selection = "SELECT price_instruments_data.symbol, "+\
@@ -171,7 +156,7 @@ def set_model_price_action_10dr(uid, force_full_update):
             # (2.2) Create a function to calculate the value of the model data
             # function should contains specific parameters: symbol, date
             ########################################################################
-            model_data = get_price_action_model_data(symbol, selected_date)
+            model_data = get_price_action_model_data(symbol, selected_date, connection)
             #-----------------------------------------------------------------------
             cr_u = connection.cursor(pymysql.cursors.SSCursor)
             sql_u = "UPDATE price_instruments_data SET "+\
@@ -182,7 +167,7 @@ def set_model_price_action_10dr(uid, force_full_update):
             ########################################################################
             # (3) Define function that calc the model target price
             ########################################################################
-            model_tp = get_model_price_action_10dr(uid, last_date)
+            model_tp = get_model_price_action_10dr(uid, last_date, connection)
             debug(str(model_tp) + ' ::: ' + str(last_date) +\
                   ' ::: ' + str(selected_date))
             #-----------------------------------------------------------------------
@@ -213,21 +198,14 @@ def set_model_price_action_10dr(uid, force_full_update):
     cursor.execute(sql)
     connection.commit()
     cursor.close()
-    connection.close()
     gc.collect()
     return ret
 
 
 
-def get_data_day(what, symbol, date_start, date_end):
+def get_data_day(what, symbol, date_start, date_end, connection):
     """ xxx """
     ret = 0
-    connection = pymysql.connect(host=DB_SRV,
-                                 user=DB_USR,
-                                 password=DB_PWD,
-                                 db=DB_NAME,
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     if what == 'u':
         sql = 'SELECT COUNT(*) FROM price_instruments_data WHERE symbol="'+\
@@ -255,10 +233,9 @@ def get_data_day(what, symbol, date_start, date_end):
     for row in res:
         ret = row[0]
     cursor.close()
-    connection.close()
     return ret
 
-def get_price_action_model_data(symbol, selected_date):
+def get_price_action_model_data(symbol, selected_date, connection):
     """ xxx """
     ret = 0
     date_end = selected_date
@@ -267,15 +244,15 @@ def get_price_action_model_data(symbol, selected_date):
     date_end_str = date_end.strftime("%Y%m%d")
 
     #1. count number of days up in num_period
-    day_up = get_data_day('u', symbol, date_start_str, date_end_str)
+    day_up = get_data_day('u', symbol, date_start_str, date_end_str, connection)
     #2. count number of days down in num_period
-    day_down = get_data_day('d', symbol, date_start_str, date_end_str)
+    day_down = get_data_day('d', symbol, date_start_str, date_end_str, connection)
     #3. average volatility percentage of days up in num_period
-    day_avg_vol_up = get_data_day('avgu', symbol, date_start_str, date_end_str)
+    day_avg_vol_up = get_data_day('avgu', symbol, date_start_str, date_end_str, connection)
     #4. average volatility percentage of days down in num_period
-    day_avg_vol_down = get_data_day('avgd', symbol, date_start_str, date_end_str)
+    day_avg_vol_down = get_data_day('avgd', symbol, date_start_str, date_end_str, connection)
     #5. sentiment_1d
-    ccc = get_data_day('s', symbol, date_start_str, date_end_str)
+    ccc = get_data_day('s', symbol, date_start_str, date_end_str, connection)
     aaa = 0
     bbb = 0
 
