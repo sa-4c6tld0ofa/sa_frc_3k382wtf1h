@@ -163,6 +163,7 @@ def set_model_price_action_20d(uid, force_full_update, connection):
             " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
             cr_u.execute(sql_u)
             connection.commit()
+            cr_u.close()
             ########################################################################
             # (3) Define function that calc the model target price
             ########################################################################
@@ -176,8 +177,8 @@ def set_model_price_action_20d(uid, force_full_update, connection):
             " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
             cr_u.execute(sql_u)
             connection.commit()
-            ret = model_tp
             cr_u.close()
+            ret = model_tp
         gc.collect()
     model_score = 0
     if not force_full_update:

@@ -163,6 +163,7 @@ def set_model_price_action_10d(uid, force_full_update, connection):
             str(model_data) +" WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
             cr_u.execute(sql_u)
             connection.commit()
+            cr_u.close()
             ########################################################################
             # (3) Define function that calc the model target price
             ########################################################################
