@@ -163,6 +163,7 @@ def set_model_price_action_20d(uid, force_full_update, connection):
             " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
             cr_u.execute(sql_u)
             connection.commit()
+            cr_u.close()
             ########################################################################
             # (3) Define function that calc the model target price
             ########################################################################
@@ -170,12 +171,13 @@ def set_model_price_action_20d(uid, force_full_update, connection):
             debug(str(model_tp) + ' ::: ' + str(last_date) +\
                   ' ::: ' + str(selected_date))
             #-----------------------------------------------------------------------
-            sql_u = "UPDATE price_instruments_data SET " +\
+            cr_v = connection.cursor(pymysql.cursors.SSCursor)
+            sql_v = "UPDATE price_instruments_data SET " +\
             str(model_tp_column) + " = " + str(model_tp) +\
             " WHERE symbol = '"+ str(symbol) +"' AND date = " + str(last_date)
-            cr_u.execute(sql_u)
+            cr_v.execute(sql_v)
             connection.commit()
-            cr_u.close()
+            cr_v.close()
             ret = model_tp
         gc.collect()
     model_score = 0
