@@ -65,7 +65,6 @@ def get_model_price_action_10d(uid, date_str, connection):
     #-----------------------------------------------------------------------
     ret = model_tp
     cursor.close()
-
     debug(str(symbol) + ' ::: '+ str(ret) +' = ' +\
           str(date_str) + ' ::: ' + str(price_close) +\
           ' ::: stdev=' + str(stdev_st))
