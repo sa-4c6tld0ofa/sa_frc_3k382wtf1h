@@ -144,7 +144,7 @@ def set_model_7d_trend(uid, force_full_update, connection):
                   ": current score = " + str(score))
 
         if model_tp == 0:
-            trend = TrendData(symbol, last_date)
+            trend = TrendData(symbol, last_date, connection)
             trend_3d_value = trend.get_3d_trend()
             trend_5d_value = trend.get_5d_trend()
             trend_7d_value = trend.get_7d_trend()

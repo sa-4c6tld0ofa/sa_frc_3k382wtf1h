@@ -26,7 +26,7 @@ class TrendData:
     ta_5d_trend = ''
     ta_7d_trend = ''
 
-    def __init__(self, symbol, datestr):
+    def __init__(self, symbol, datestr, connection):
         """ """
         ta_3d_count_up = 0
         ta_3d_count_down = 0
@@ -35,12 +35,6 @@ class TrendData:
         ta_7d_count_up = 0
         ta_7d_count_down = 0
 
-        connection = pymysql.connect(host=DB_SRV,
-                                     user=DB_USR,
-                                     password=DB_PWD,
-                                     db=DB_NAME,
-                                     charset='utf8mb4',
-                                     cursorclass=pymysql.cursors.DictCursor)
         cursor = connection.cursor(pymysql.cursors.SSCursor)
         sql = "SELECT price_close FROM price_instruments_data "+\
         "WHERE symbol='"+ str(symbol) +"' AND date <= "+\
@@ -87,7 +81,6 @@ class TrendData:
             TrendData.ta_3d_trend = 'd'
 
         cursor.close()
-        connection.close()
         gc.collect()
 
     def get_3d_trend(self):
