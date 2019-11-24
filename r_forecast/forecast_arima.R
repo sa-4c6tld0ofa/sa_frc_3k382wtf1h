@@ -93,7 +93,6 @@ forecast_data <- function() {
               f <- paste(xf,fn, sep = "")
               write.csv(fc, file = f)
             }, error=function(e){
-              print(symbol)
               cat("ERROR :",conditionMessage(e), "\n")
               fit <- auto.arima(ts_price, stepwise = F, approximation = F)
               fc  <- forecast(fit, h = forecastNumbOfdays)
@@ -106,9 +105,7 @@ forecast_data <- function() {
         cat("ERROR :",conditionMessage(e), "\n")
       })
       detach(mydata)
-      print(paste(uid),sep ="/")
       gc()
-      gcinfo(TRUE)
 
       i = i+1
   }
