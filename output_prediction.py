@@ -189,14 +189,14 @@ def compute_target_price(uid, force_full_update, connection):
     for row in res:
         symbol = row[0]
 
-    sql = "SELECT asset_class, pip, " + str(column_of_each_model) +\
+    sql = "SELECT asset_class, sentiment, " + str(column_of_each_model) +\
     " FROM instruments JOIN symbol_list ON "+\
     "symbol_list.symbol = instruments.symbol WHERE symbol_list.uid = " + str(uid)
     cursor.execute(sql)
     res = cursor.fetchall()
     for row in res:
         asset_class = row[0]
-        pip = row[1]
+        sentiment = row[1]
         ##########################################################################################
         # (3) Add model column as per column_of_each_model variable and append row index
         ##########################################################################################
@@ -292,9 +292,9 @@ def compute_target_price(uid, force_full_update, connection):
         clear_trades(symbol)
         get_forecast_pnl(symbol, number_day_scan, force_full_update, connection)
 
-        get_trades(symbol, uid, number_day_scan, False)
-        gen_chart(symbol, uid)
-        get_instr_sum(symbol, uid, asset_class, date_minus_ten, pip)
+        get_trades(symbol, uid, number_day_scan, False, connection)
+        gen_chart(symbol, uid, connection)
+        get_instr_sum(symbol, uid, asset_class, date_minus_ten, sentiment, connection)
     else:
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = CAST("+\
