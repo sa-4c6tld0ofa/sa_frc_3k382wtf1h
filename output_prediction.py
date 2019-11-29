@@ -290,7 +290,7 @@ def compute_target_price(uid, force_full_update, connection):
         connection.commit()
         clear_chart_data(symbol)
         clear_trades(symbol)
-        get_forecast_pnl(symbol, uid, number_day_scan, force_full_update)
+        get_forecast_pnl(symbol, uid, number_day_scan, force_full_update, connection)
 
         get_trades(symbol, uid, number_day_scan, False)
         gen_chart(symbol, uid)
