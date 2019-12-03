@@ -271,20 +271,32 @@ def compute_target_price(uid, force_full_update, connection):
         selected_model_column = 'price_instruments_data.price_action_10dr_tp'
     #---------------------------------------------------------------------------------------------
 
-    sql = "SELECT id FROM price_instruments_data WHERE symbol ='"+\
+    sql = "SELECT id, date, price_close FROM price_instruments_data WHERE symbol ='"+\
     symbol +"' ORDER BY date DESC LIMIT 1"
     cursor.execute(sql)
     res = cursor.fetchall()
     price_id = 0
+    selected_date = datetime.datetime.now()
+    current_price = 0
     for row in res:
         price_id = row[0]
-
+        selected_date = row[1]
+        current_price =  row[2]
+    
     if force_full_update:
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = CAST("+\
         selected_model_column +" AS DECIMAL(20,"+\
         str(get_instr_decimal_places(symbol)) +\
-        ")) WHERE price_instruments_data.symbol = '"+ symbol + "'"
+        ")) WHERE price_instruments_data.symbol = '"+ symbol + "' AND "+\
+        "DAYOFWEEK(date)<>6 AND DAYOFWEEK(date)<>7"
+        debug('### ::: ' + sql)
+        cursor.execute(sql)
+        connection.commit()
+        sql = "UPDATE price_instruments_data SET "+\
+        "price_instruments_data.target_price = -9 "+\
+        "WHERE price_instruments_data.symbol = '"+ symbol + "' AND "+\
+        "DAYOFWEEK(date)=6 AND DAYOFWEEK(date)=7"
         debug('### ::: ' + sql)
         cursor.execute(sql)
         connection.commit()
@@ -296,6 +308,14 @@ def compute_target_price(uid, force_full_update, connection):
         gen_chart(symbol, uid, connection)
         get_instr_sum(symbol, uid, asset_class, date_minus_ten, sentiment, connection)
     else:
+        if selected_date.weekday() == 4 and selected_date.weekday() == 5:
+            selected_model_column = -9
+            
+        selected_model_column = get_target_price(selected_model_column,
+                                                 current_price,
+                                                 selected_date,
+                                                 connection)
+
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = CAST("+\
         selected_model_column +" AS DECIMAL(20,"+\
@@ -307,6 +327,40 @@ def compute_target_price(uid, force_full_update, connection):
 
     cursor.close()
     gc.collect()
+    
+def get_target_price(proposed_tp, current_price, selected_date, connection):
+    """ xxx """
+    ret = -9
+    trade_type_filter = 'price_close <= target_price'
+    selected_date = selected_date.strftime('%Y%m%d')
+    if proposed_tp != -9:
+        if current_price <= proposed_tp:
+            trade_type_filter = 'price_close <= target_price'
+        else:
+            trade_type_filter = 'price_close > target_price'
+
+        cursor = connection.cursor(pymysql.cursors.SSCursor)
+        sql = 'SELECT target_price, pnl FROM price_instruments_data '+\
+        'WHERE date < '+ selected_date + ' AND '+ trade_type_filter + ' '+\
+        'ORDER By date DESC LIMIT 1'
+        cursor.execute(sql)
+        res = cursor.fetchall()
+        previous_tp = -9
+        previous_pnl = -1
+        for row in res:
+            previous_tp = row[0]
+            previous_pnl = row[2]
+            
+        cursor.close()
+        
+        if previous_tp == -9:
+            ret = proposed_tp
+        if previous_pnl >= 0:
+            ret = proposed_tp
+    
+    
+    
+    return ret
 
 
 def set_all_prediction_model_target_price_n_score(uid, force_full_update, connection):
