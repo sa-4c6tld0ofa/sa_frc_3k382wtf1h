@@ -140,6 +140,8 @@ def compute_target_price(uid, force_full_update, connection):
     number_day_scan = 370
     date_minus_ten = datetime.datetime.now() - timedelta(days=10)
     date_minus_ten = date_minus_ten.strftime("%Y%m%d")
+    date_minus_max = datetime.datetime.now() - timedelta(days=number_day_scan)
+    date_minus_max = date_minus_max.strftime("%Y%m%d")
 
 
     #name column of each model in the same order...
@@ -281,22 +283,22 @@ def compute_target_price(uid, force_full_update, connection):
     for row in res:
         price_id = row[0]
         selected_date = row[1]
-        current_price =  row[2]
-    
+        current_price = row[2]
+
     if force_full_update:
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = CAST("+\
         selected_model_column +" AS DECIMAL(20,"+\
         str(get_instr_decimal_places(symbol)) +\
         ")) WHERE price_instruments_data.symbol = '"+ symbol + "' AND "+\
-        "DAYOFWEEK(date)<>6 AND DAYOFWEEK(date)<>7"
+        "DAYOFWEEK(date)<>6 AND DAYOFWEEK(date)<>7 AND date >= " + str(date_minus_max)
         debug('### ::: ' + sql)
         cursor.execute(sql)
         connection.commit()
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = -9 "+\
         "WHERE price_instruments_data.symbol = '"+ symbol + "' AND "+\
-        "DAYOFWEEK(date)=6 AND DAYOFWEEK(date)=7"
+        "DAYOFWEEK(date)=6 AND DAYOFWEEK(date)=7 and date >= " + str(date_minus_max)
         debug('### ::: ' + sql)
         cursor.execute(sql)
         connection.commit()
@@ -310,7 +312,7 @@ def compute_target_price(uid, force_full_update, connection):
     else:
         if selected_date.weekday() == 4 and selected_date.weekday() == 5:
             selected_model_column = -9
-            
+
         selected_model_column = get_target_price(selected_model_column,
                                                  current_price,
                                                  selected_date,
@@ -323,11 +325,52 @@ def compute_target_price(uid, force_full_update, connection):
         ")) WHERE price_instruments_data.id = " + str(price_id)
         cursor.execute(sql)
         connection.commit()
-
-
     cursor.close()
     gc.collect()
-    
+
+def cut_losses(symbol, date_minus_max, connection):
+    """ xxx """
+    cursor = connection.cursor(pymysql.cursors.SSCursor)
+    sql = "SELECT price_close, target_price, pnl, id FROM price_instruments_data "+\
+    "WHERE symbol = '"+ str(symbol) +"' AND "+\
+    "date >= " + str(date_minus_max) + "ORDER BY date"
+    cursor.execute(sql)
+    res = cursor.fetchall()
+    trade_order_type = 'c'
+    sel_trade_order_type = 'w'
+    trade_pnl = 0
+    for row in res:
+        price_close = row[0]
+        target_price = row[1]
+        pnl = row[2]
+        trade_id = row[3]
+        if trade_order_type == 'c':
+            if price_close <= target_price:
+                trade_order_type = 'b'
+            if price_close > target_price:
+                trade_order_type = 's'
+            if target_price == -9:
+                trade_order_type = 'w'
+            trade_pnl = pnl
+        else:
+            if price_close <= target_price:
+                sel_trade_order_type = 'b'
+            if price_close > target_price:
+                sel_trade_order_type = 's'
+            if sel_trade_order_type == trade_order_type and trade_pnl < 0:
+                cancel_trade(trade_id, connection)
+            trade_order_type = 'c'
+    cursor.close()
+
+def cancel_trade(trade_id, connection):
+    """ xxx """
+    cursor = connection.cursor(pymysql.cursors.SSCursor)
+    sql = "UPDATE price_instruments_data SET target_price = -9, pnl = 0 "+\
+    "WHERE id="+ str(trade_id)
+    cursor.execute(sql)
+    connection.commit()
+    cursor.close()
+
 def get_target_price(proposed_tp, current_price, selected_date, connection):
     """ xxx """
     ret = -9
@@ -350,16 +393,14 @@ def get_target_price(proposed_tp, current_price, selected_date, connection):
         for row in res:
             previous_tp = row[0]
             previous_pnl = row[2]
-            
+
         cursor.close()
-        
+
         if previous_tp == -9:
             ret = proposed_tp
         if previous_pnl >= 0:
             ret = proposed_tp
-    
-    
-    
+
     return ret
 
 
