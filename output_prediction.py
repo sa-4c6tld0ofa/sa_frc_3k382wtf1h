@@ -304,6 +304,7 @@ def compute_target_price(uid, force_full_update, connection):
         debug('### ::: ' + sql)
         cursor.execute(sql)
         connection.commit()
+        cut_losses(symbol, date_minus_max, connection)
         clear_chart_data(symbol)
         clear_trades(symbol)
         get_forecast_pnl(symbol, number_day_scan, force_full_update, connection)
