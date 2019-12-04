@@ -316,7 +316,8 @@ def compute_target_price(uid, force_full_update, connection):
         if selected_date.weekday() == 4 and selected_date.weekday() == 5:
             selected_model_column = -9
 
-        selected_model_column = get_target_price(selected_model_column,
+        selected_model_column = get_target_price(symbol,
+                                                 selected_model_column,
                                                  current_price,
                                                  selected_date,
                                                  connection)
@@ -381,9 +382,24 @@ def cancel_trade(trade_id, connection):
     connection.commit()
     cursor.close()
 
-def get_target_price(proposed_tp, current_price, selected_date, connection):
+def get_target_price(symbol,
+                     proposed_tp_column,
+                     current_price,
+                     selected_date,
+                     connection):
     """ xxx """
     ret = -9
+    proposed_tp = -9
+    if str(proposed_tp_column) != '-9':
+        cursor = connection.cursor(pymysql.cursors.SSCursor)
+        sql = 'SELECT '+ str(proposed_tp_column) + ' FROM price_instruments_data '+\
+        'WHERE symbol = "'+ str(symbol) +'" ORDER By date DESC LIMIT 1'
+        cursor.execute(sql)
+        res = cursor.fetchall()
+        for row in res:
+            proposed_tp = row[0]
+        cursor.close()
+
     trade_type_filter = 'price_close <= target_price'
     selected_date = selected_date.strftime('%Y%m%d')
     if proposed_tp != -9:
@@ -391,10 +407,11 @@ def get_target_price(proposed_tp, current_price, selected_date, connection):
             trade_type_filter = 'price_close <= target_price'
         else:
             trade_type_filter = 'price_close > target_price'
-
+            
         cursor = connection.cursor(pymysql.cursors.SSCursor)
         sql = 'SELECT target_price, pnl FROM price_instruments_data '+\
-        'WHERE date < '+ selected_date + ' AND '+ trade_type_filter + ' '+\
+        'WHERE symbol = "'+ str(symbol) +'" date < '+ selected_date +\
+        ' AND '+ trade_type_filter + ' '+\
         'ORDER By date DESC LIMIT 1'
         cursor.execute(sql)
         res = cursor.fetchall()
@@ -403,7 +420,6 @@ def get_target_price(proposed_tp, current_price, selected_date, connection):
         for row in res:
             previous_tp = row[0]
             previous_pnl = row[2]
-
         cursor.close()
 
         if previous_tp == -9:
