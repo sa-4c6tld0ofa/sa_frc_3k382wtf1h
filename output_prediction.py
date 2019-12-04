@@ -410,7 +410,7 @@ def get_target_price(symbol,
             
         cursor = connection.cursor(pymysql.cursors.SSCursor)
         sql = 'SELECT target_price, pnl FROM price_instruments_data '+\
-        'WHERE symbol = "'+ str(symbol) +'" date < '+ selected_date +\
+        'WHERE symbol = "'+ str(symbol) +'" AND date < '+ selected_date +\
         ' AND '+ trade_type_filter + ' '+\
         'ORDER By date DESC LIMIT 1'
         cursor.execute(sql)
