@@ -345,7 +345,6 @@ def cut_losses(symbol, date_minus_max, connection):
     trade_price_close = 0
     trade_tp = 0
     sel_trade_price_close = 0
-    sel_trade_tp = 0
     trade_order_type = 'w'
     sel_trade_order_type = 'w'
     for row in res:
@@ -358,7 +357,6 @@ def cut_losses(symbol, date_minus_max, connection):
             else:
                 sel_trade_order_type = 's'
             if sel_trade_order_type == trade_order_type:
-                if trade_tp != -9:
                     if trade_pnl < 0:
                         cancel_trade(trade_id, connection)
             scan_what = 'prev_trade'
@@ -366,7 +364,6 @@ def cut_losses(symbol, date_minus_max, connection):
         if scan_what == 'prev_trade':
             trade_pnl = row[0]
             trade_price_close = row[2]
-            trade_tp = row[3]
             if trade_price_close <= trade_tp:
                 trade_order_type = 'b'
             else:
