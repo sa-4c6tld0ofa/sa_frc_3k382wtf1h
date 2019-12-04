@@ -324,10 +324,9 @@ def compute_target_price(uid, force_full_update, connection):
 
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = CAST("+\
-        selected_model_column +" AS DECIMAL(20,"+\
+        str(selected_model_column) +" AS DECIMAL(20,"+\
         str(get_instr_decimal_places(symbol)) +\
         ")) WHERE price_instruments_data.id = " + str(price_id)
-        print(sql)
         cursor.execute(sql)
         connection.commit()
     cursor.close()
