@@ -350,9 +350,9 @@ def cut_losses(symbol, date_minus_max, connection):
             trade_tp = row[2]
             scan_what = 'next_trade'
         else:
-            if trade_tp != -9 or trade_pnl < 0:
+            if trade_tp != -9 and trade_pnl < 0:
                 cancel_trade(trade_id, connection)
-                scan_what = 'prev_trade'
+            scan_what = 'prev_trade'
     cursor.close()
 
 def cancel_trade(trade_id, connection):
