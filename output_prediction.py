@@ -363,6 +363,7 @@ def cut_losses(symbol, date_minus_max, connection):
 
         if scan_what == 'prev_trade':
             trade_pnl = row[0]
+            trade_tp = row[3]
             trade_price_close = row[2]
             if trade_price_close <= trade_tp:
                 trade_order_type = 'b'
