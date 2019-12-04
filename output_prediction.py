@@ -298,7 +298,7 @@ def compute_target_price(uid, force_full_update, connection):
         cursor.execute(sql)
         connection.commit()
         sql = "UPDATE price_instruments_data SET "+\
-        "price_instruments_data.target_price = -9 "+\
+        "price_instruments_data.target_price = -9, price_instruments_data.pnl = 0 "+\
         "WHERE price_instruments_data.symbol = '"+ symbol + "' AND "+\
         "(DAYOFWEEK(date)=6 OR DAYOFWEEK(date)=7) and date >= " + str(date_minus_max)
         debug('### ::: ' + sql)
@@ -346,8 +346,8 @@ def cut_losses(symbol, date_minus_max, connection):
         price_close = row[0]
         target_price = row[1]
         pnl = row[2]
-        trade_id = row[3]
         if trade_order_type == 'c':
+            trade_id = row[3]            
             if price_close <= target_price:
                 trade_order_type = 'b'
             if price_close > target_price:
