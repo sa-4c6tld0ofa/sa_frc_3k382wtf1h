@@ -419,7 +419,7 @@ def get_target_price(symbol,
         previous_pnl = -1
         for row in res:
             previous_tp = row[0]
-            previous_pnl = row[2]
+            previous_pnl = row[1]
         cursor.close()
 
         if previous_tp == -9:
