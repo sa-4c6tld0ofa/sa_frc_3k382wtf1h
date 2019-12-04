@@ -183,6 +183,8 @@ def compute_target_price(uid, force_full_update, connection):
     score_price_action_10d = 0
     score_price_action_10dr = 0
     #------------------------------------------------------------------------------------------
+    asset_class = ''
+    sentiment = 0
 
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = "SELECT symbol from symbol_list WHERE uid = " + str(uid)
