@@ -334,35 +334,25 @@ def compute_target_price(uid, force_full_update, connection):
 def cut_losses(symbol, date_minus_max, connection):
     """ xxx """
     cursor = connection.cursor(pymysql.cursors.SSCursor)
-    sql = "SELECT price_close, target_price, pnl, id FROM price_instruments_data "+\
+    sql = "SELECT pnl, id, target_price FROM price_instruments_data "+\
     "WHERE symbol = '"+ str(symbol) +"' AND "+\
     "date >= " + str(date_minus_max) + " ORDER BY date"
     cursor.execute(sql)
     res = cursor.fetchall()
-    trade_order_type = 'c'
-    sel_trade_order_type = 'w'
+    scan_what = 'prev_trade'
     trade_pnl = 0
+    trade_id = 0
+    trade_tp = -9
     for row in res:
-        price_close = row[0]
-        target_price = row[1]
-        pnl = row[2]
-        if trade_order_type == 'c':
-            trade_id = row[3]            
-            if price_close <= target_price:
-                trade_order_type = 'b'
-            if price_close > target_price:
-                trade_order_type = 's'
-            if target_price == -9:
-                trade_order_type = 'w'
-            trade_pnl = pnl
+        trade_id = row[1]
+        if scan_what == 'prev_trade':
+            trade_pnl = row[0]
+            trade_tp = row[2]
+            scan_what = 'next_trade'
         else:
-            if price_close <= target_price:
-                sel_trade_order_type = 'b'
-            if price_close > target_price:
-                sel_trade_order_type = 's'
-            if sel_trade_order_type == trade_order_type and trade_pnl < 0:
+            if trade_tp != -9 and trade_pnl < 0:
                 cancel_trade(trade_id, connection)
-            trade_order_type = 'c'
+                scan_what = 'prev_trade'
     cursor.close()
 
 def cancel_trade(trade_id, connection):
