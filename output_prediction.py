@@ -327,6 +327,7 @@ def compute_target_price(uid, force_full_update, connection):
         selected_model_column +" AS DECIMAL(20,"+\
         str(get_instr_decimal_places(symbol)) +\
         ")) WHERE price_instruments_data.id = " + str(price_id)
+        print(sql)
         cursor.execute(sql)
         connection.commit()
     cursor.close()
