@@ -334,7 +334,7 @@ def compute_target_price(uid, force_full_update, connection):
 def cut_losses(symbol, date_minus_max, connection):
     """ xxx """
     cursor = connection.cursor(pymysql.cursors.SSCursor)
-    sql = "SELECT pnl, id, target_price FROM price_instruments_data "+\
+    sql = "SELECT pnl, id FROM price_instruments_data "+\
     "WHERE symbol = '"+ str(symbol) +"' AND "+\
     "date >= " + str(date_minus_max) + " ORDER BY date"
     cursor.execute(sql)
@@ -342,17 +342,16 @@ def cut_losses(symbol, date_minus_max, connection):
     scan_what = 'prev_trade'
     trade_pnl = 0
     trade_id = 0
-    trade_tp = -9
     for row in res:
         trade_id = row[1]
-        if scan_what == 'prev_trade':
-            trade_pnl = row[0]
-            trade_tp = row[2]
-            scan_what = 'next_trade'
-        else:
+        if scan_what == 'next_trade':
             if trade_pnl < 0:
                 cancel_trade(trade_id, connection)
             scan_what = 'prev_trade'
+
+        if scan_what == 'prev_trade':
+            trade_pnl = row[0]
+            scan_what = 'next_trade'
     cursor.close()
 
 def cancel_trade(trade_id, connection):
