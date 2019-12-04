@@ -293,14 +293,14 @@ def compute_target_price(uid, force_full_update, connection):
         selected_model_column +" AS DECIMAL(20,"+\
         str(get_instr_decimal_places(symbol)) +\
         ")) WHERE price_instruments_data.symbol = '"+ symbol + "' AND "+\
-        "DAYOFWEEK(date)<>6 AND DAYOFWEEK(date)<>7 AND date >= " + str(date_minus_max)
+        "(DAYOFWEEK(date)<>6 AND DAYOFWEEK(date)<>7) AND date >= " + str(date_minus_max)
         debug('### ::: ' + sql)
         cursor.execute(sql)
         connection.commit()
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = -9 "+\
         "WHERE price_instruments_data.symbol = '"+ symbol + "' AND "+\
-        "DAYOFWEEK(date)=6 AND DAYOFWEEK(date)=7 and date >= " + str(date_minus_max)
+        "(DAYOFWEEK(date)=6 OR DAYOFWEEK(date)=7) and date >= " + str(date_minus_max)
         debug('### ::: ' + sql)
         cursor.execute(sql)
         connection.commit()
