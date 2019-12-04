@@ -336,7 +336,7 @@ def cut_losses(symbol, date_minus_max, connection):
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = "SELECT price_close, target_price, pnl, id FROM price_instruments_data "+\
     "WHERE symbol = '"+ str(symbol) +"' AND "+\
-    "date >= " + str(date_minus_max) + "ORDER BY date"
+    "date >= " + str(date_minus_max) + " ORDER BY date"
     cursor.execute(sql)
     res = cursor.fetchall()
     trade_order_type = 'c'
