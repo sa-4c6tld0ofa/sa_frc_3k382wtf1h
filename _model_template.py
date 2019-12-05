@@ -103,7 +103,7 @@ def set_model_xxx_template_xxx(uid, force_full_update, connection):
         "price_instruments_data.date, price_instruments_data.price_close, " +\
         str(model_tp_column) + " FROM price_instruments_data JOIN symbol_list "+\
         "ON symbol_list.symbol = price_instruments_data.symbol WHERE symbol_list.uid = "+\
-        str(uid) +" AND price_instruments_data.is_ta_calc = 0 ORDER BY date DESC"
+        str(uid) +" AND price_instruments_data.is_ta_calc = 0 ORDER BY date DESC LIMIT "+ str(day_to_process)
 
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = sql_selection
