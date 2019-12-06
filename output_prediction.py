@@ -303,7 +303,7 @@ def compute_target_price(uid, force_full_update, connection):
         get_instr_sum(symbol, uid, asset_class, date_minus_ten, sentiment, connection)
     else:
         sql = "SELECT id, date, price_close FROM price_instruments_data WHERE symbol ='"+\
-        symbol +"' AND is_ta_calc=0 ORDER BY date LIMIT "+ str(number_day_scan)
+        symbol +"' AND is_ta_calc=0 AND date >= " + str(date_minus_max) + " ORDER BY date"
         cursor.execute(sql)
         res = cursor.fetchall()
         price_id = 0
@@ -398,6 +398,7 @@ def get_target_price(symbol,
         cursor = connection.cursor(pymysql.cursors.SSCursor)
         sql = 'SELECT '+ str(proposed_tp_column) + ' FROM price_instruments_data '+\
         'WHERE symbol = "'+ str(symbol) +'" AND date='+ str(selected_date) +' ORDER By date DESC'
+        print(sql)
         cursor.execute(sql)
         res = cursor.fetchall()
         for row in res:
