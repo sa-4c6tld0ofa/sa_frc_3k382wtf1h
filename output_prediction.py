@@ -316,7 +316,7 @@ def compute_target_price(uid, force_full_update, connection):
         
             if selected_date.weekday() == 4 and selected_date.weekday() == 5:
                 selected_model_column = -9
-    
+            print(selected_model_column)
             selected_model_column = get_target_price(symbol,
                                                      selected_model_column,
                                                      current_price,
@@ -328,7 +328,7 @@ def compute_target_price(uid, force_full_update, connection):
             str(selected_model_column) +" AS DECIMAL(20,"+\
             str(get_instr_decimal_places(symbol)) +\
             ")) WHERE price_instruments_data.id = " + str(price_id)
-            print(selected_model_column + ' ::: '+ symbol)
+            print(str(selected_model_column) + ' ::: '+ symbol)
             print(sql)
             cursor.execute(sql)
             connection.commit()
