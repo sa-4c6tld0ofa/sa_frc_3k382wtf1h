@@ -399,6 +399,9 @@ def get_target_price(symbol,
         for row in res:
             proposed_tp = row[0]
         cursor.close()
+    
+    if proposed_tp == 0:
+        proposed_tp = -9
 
     trade_type_filter = 'price_close <= target_price'
     selected_date = selected_date.strftime('%Y%m%d')
