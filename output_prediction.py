@@ -275,17 +275,6 @@ def compute_target_price(uid, force_full_update, connection):
         selected_model_column = 'price_instruments_data.price_action_10dr_tp'
     #---------------------------------------------------------------------------------------------
 
-    sql = "SELECT id, date, price_close FROM price_instruments_data WHERE symbol ='"+\
-    symbol +"' ORDER BY date DESC LIMIT 1"
-    cursor.execute(sql)
-    res = cursor.fetchall()
-    price_id = 0
-    selected_date = datetime.datetime.now()
-    current_price = 0
-    for row in res:
-        price_id = row[0]
-        selected_date = row[1]
-        current_price = row[2]
 
     if force_full_update:
         sql = "UPDATE price_instruments_data SET "+\
@@ -313,23 +302,37 @@ def compute_target_price(uid, force_full_update, connection):
         gen_chart(symbol, uid, connection)
         get_instr_sum(symbol, uid, asset_class, date_minus_ten, sentiment, connection)
     else:
-        if selected_date.weekday() == 4 and selected_date.weekday() == 5:
-            selected_model_column = -9
-
-        selected_model_column = get_target_price(symbol,
-                                                 selected_model_column,
-                                                 current_price,
-                                                 selected_date,
-                                                 connection)
-        
-        sql = "UPDATE price_instruments_data SET "+\
-        "price_instruments_data.target_price = CAST("+\
-        str(selected_model_column) +" AS DECIMAL(20,"+\
-        str(get_instr_decimal_places(symbol)) +\
-        ")) WHERE price_instruments_data.id = " + str(price_id)
-        print(sql)
+        sql = "SELECT id, date, price_close FROM price_instruments_data WHERE symbol ='"+\
+        symbol +"' AND is_ta_calc=0 ORDER BY date LIMIT "+ str(number_day_scan)
         cursor.execute(sql)
-        connection.commit()
+        res = cursor.fetchall()
+        price_id = 0
+        selected_date = datetime.datetime.now()
+        current_price = 0
+        for row in res:
+            price_id = row[0]
+            selected_date = row[1]
+            current_price = row[2]
+        
+            if selected_date.weekday() == 4 and selected_date.weekday() == 5:
+                selected_model_column = -9
+    
+            selected_model_column = get_target_price(symbol,
+                                                     selected_model_column,
+                                                     current_price,
+                                                     selected_date,
+                                                     connection)
+
+            sql = "UPDATE price_instruments_data SET "+\
+            "price_instruments_data.target_price = CAST("+\
+            str(selected_model_column) +" AS DECIMAL(20,"+\
+            str(get_instr_decimal_places(symbol)) +\
+            ")) WHERE price_instruments_data.id = " + str(price_id)
+            print(selected_model_column + ' ::: '+ symbol + ' ::: '+ str(selected_date))
+            print(sql)
+            cursor.execute(sql)
+            connection.commit()
+
     cursor.close()
     gc.collect()
 
