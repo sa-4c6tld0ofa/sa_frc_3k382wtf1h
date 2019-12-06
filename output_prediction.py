@@ -321,12 +321,13 @@ def compute_target_price(uid, force_full_update, connection):
                                                  current_price,
                                                  selected_date,
                                                  connection)
-
+        
         sql = "UPDATE price_instruments_data SET "+\
         "price_instruments_data.target_price = CAST("+\
         str(selected_model_column) +" AS DECIMAL(20,"+\
         str(get_instr_decimal_places(symbol)) +\
         ")) WHERE price_instruments_data.id = " + str(price_id)
+        print(sql)
         cursor.execute(sql)
         connection.commit()
     cursor.close()
@@ -393,7 +394,7 @@ def get_target_price(symbol,
     if str(proposed_tp_column) != '-9':
         cursor = connection.cursor(pymysql.cursors.SSCursor)
         sql = 'SELECT '+ str(proposed_tp_column) + ' FROM price_instruments_data '+\
-        'WHERE symbol = "'+ str(symbol) +'" ORDER By date DESC LIMIT 1'
+        'WHERE symbol = "'+ str(symbol) +'" AND date='+ str(selected_date) +' ORDER By date DESC'
         cursor.execute(sql)
         res = cursor.fetchall()
         for row in res:
