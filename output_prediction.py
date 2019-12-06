@@ -392,6 +392,7 @@ def get_target_price(symbol,
                      selected_date,
                      connection):
     """ xxx """
+    selected_date = selected_date.strftime('%Y%m%d')
     ret = -9
     proposed_tp = -9
     if str(proposed_tp_column) != '-9':
@@ -409,7 +410,6 @@ def get_target_price(symbol,
         proposed_tp = -9
 
     trade_type_filter = 'price_close <= target_price'
-    selected_date = selected_date.strftime('%Y%m%d')
     if proposed_tp != -9:
         if current_price <= proposed_tp:
             trade_type_filter = 'price_close <= target_price'
