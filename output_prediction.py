@@ -334,7 +334,14 @@ def compute_target_price(uid, force_full_update, connection):
     gc.collect()
 
 def cut_losses(symbol, date_minus_max, connection):
-    """ xxx """
+    """ 
+    Set trade to wait status to avoid accumulation of losing trades
+    Args:
+        String: Instrument symbol
+        String: date in string format. Date from...
+    Returns:
+        None
+    """
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = "SELECT pnl, id, price_close, target_price FROM price_instruments_data "+\
     "WHERE symbol = '"+ str(symbol) +"' AND "+\
@@ -375,7 +382,11 @@ def cut_losses(symbol, date_minus_max, connection):
     cursor.close()
 
 def cancel_trade(trade_id, connection):
-    """ xxx """
+    """
+    Cancel trade as per trade id.
+    Args:
+        Integer: Trade id
+    """
     cursor = connection.cursor(pymysql.cursors.SSCursor)
     sql = "UPDATE price_instruments_data SET target_price = -9, pnl = 0 "+\
     "WHERE id="+ str(trade_id)
@@ -388,7 +399,16 @@ def get_target_price(symbol,
                      current_price,
                      selected_date,
                      connection):
-    """ xxx """
+    """
+    Return the target price according to the strategy
+    Args:
+        String: Instrument symbol
+        String: Column of the strategy to use as the target price. if -9 =  cancelled.
+        Double: Current price
+        String: Date in string format
+    Returns:
+        Double: Target price
+    """
     selected_date = selected_date.strftime('%Y%m%d')
     ret = -9
     proposed_tp = -9
