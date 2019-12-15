@@ -314,8 +314,10 @@ def compute_target_price(uid, force_full_update, connection):
             selected_date = row[1]
             current_price = row[2]
         
-            if selected_date.weekday() == 4 and selected_date.weekday() == 5:
-                selected_model_column = -9
+            if selected_date.weekday() == 4:
+                selected_model_column = '-9'
+            if selected_date.weekday() == 5:
+                selected_model_column = '-9'
             selected_model_column = get_target_price(symbol,
                                                      selected_model_column,
                                                      current_price,
@@ -412,7 +414,7 @@ def get_target_price(symbol,
     selected_date = selected_date.strftime('%Y%m%d')
     ret = -9
     proposed_tp = -9
-    if str(proposed_tp_column) != '-9':
+    if proposed_tp_column != '-9':
         cursor = connection.cursor(pymysql.cursors.SSCursor)
         sql = 'SELECT '+ str(proposed_tp_column) + ' FROM price_instruments_data '+\
         'WHERE symbol = "'+ str(symbol) +'" AND date='+ str(selected_date) +' ORDER By date DESC'
@@ -425,17 +427,10 @@ def get_target_price(symbol,
     if proposed_tp == 0:
         proposed_tp = -9
 
-    trade_type_filter = 'price_close <= target_price'
     if proposed_tp != -9:
-        if current_price <= proposed_tp:
-            trade_type_filter = 'price_close <= target_price'
-        else:
-            trade_type_filter = 'price_close > target_price'
-            
         cursor = connection.cursor(pymysql.cursors.SSCursor)
         sql = 'SELECT target_price, pnl FROM price_instruments_data '+\
-        'WHERE symbol = "'+ str(symbol) +'" AND date < '+ selected_date +\
-        ' AND '+ trade_type_filter + ' '+\
+        'WHERE symbol = "'+ str(symbol) +'" AND date < '+ selected_date+ ' ' +\
         'ORDER By date DESC LIMIT 1'
         cursor.execute(sql)
         res = cursor.fetchall()
@@ -448,7 +443,7 @@ def get_target_price(symbol,
 
         if previous_tp == -9:
             ret = proposed_tp
-        if previous_pnl >= 0:
+        if previous_pnl > 0:
             ret = proposed_tp
 
     return ret
