@@ -28,7 +28,7 @@ DB_SRV = ACCESS_OBJ.db_server()
 # 3. Follow instruction in the following py file as well as for output_prediction.py
 ###########################################################################
 
-def get_model_xxx_template_xxx(uid, last_date, connection):
+def get_model_m1trend(uid, last_date, connection):
     """ xxx """
     ################################################
     # (1) Logic according to model
@@ -84,9 +84,9 @@ def set_model_xxx_template_xxx(uid, force_full_update, connection):
     ########################################################################
     # (2.1) Define names of column in use by the model
     ########################################################################
-    model_column = 'price_instruments_data.xxx'
-    model_tp_column = 'price_instruments_data.xxx_tp'
-    model_score_column = 'instruments.score_xxx'
+    model_column = 'price_instruments_data.ma10'
+    model_tp_column = 'price_instruments_data.ma10_tp'
+    model_score_column = 'instruments.score_m1trend'
     #-----------------------------------------------------------------------
 
     day_to_process = 370
