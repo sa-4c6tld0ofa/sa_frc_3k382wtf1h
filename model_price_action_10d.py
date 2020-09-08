@@ -6,7 +6,7 @@ from datetime import timedelta
 import pymysql.cursors
 PDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.abspath(PDIR))
-from settings import SmartAlphaPath, debug
+from settings import SmartAlphaPath, debug, score_increment
 SETT = SmartAlphaPath()
 sys.path.append(os.path.abspath(SETT.get_path_pwd()))
 from sa_access import sa_db_access
@@ -139,14 +139,14 @@ def set_model_price_action_10d(uid, force_full_update, connection):
                 type_of_trade = 's'
             if (previous_price >= last_price) and (type_of_trade == 'b'):
                 if score > 0:
-                    score = score - 0.05
+                    score = score + score_increment('loss')
             if (previous_price >= last_price) and (type_of_trade == 's'):
-                score = score + 0.01
+                score = score + score_increment('win')
             if (previous_price < last_price) and (type_of_trade == 'b'):
-                score = score + 0.01
+                score = score + score_increment('win')
             if (previous_price < last_price) and (type_of_trade == 's'):
                 if score > 0:
-                    score = score - 0.05
+                    score = score + score_increment('loss')
             debug("### score calc "+ str(model_score_column) +\
                   ": current score = " + str(score))
 

@@ -21,6 +21,20 @@ def get_portf_suffix():
     """ Return strategy portfolio suffix """
     return "PRF:"
 
+def score_increment(what):
+    """ 
+    Return the increment number if the trade is a win or a loss.
+    what = 'win', 'loss'
+    """
+    ret = ''
+    win_incr = 0.01
+    loss_incr = -0.02
+    if what == 'win':
+        ret = win_incr
+    else:
+        ret = loss_incr
+    return ret
+
 def debug(txt):
     """ If enable_debug is True, then print to console """
     enable_debug = False
