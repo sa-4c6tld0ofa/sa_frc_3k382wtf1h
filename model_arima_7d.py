@@ -118,14 +118,14 @@ def set_model_arima_7d(uid, force_full_update, connection):
                 type_of_trade = 's'
             if (previous_price >= last_price) and (type_of_trade == 'b'):
                 if score > 0:
-                    score = score - 0.01
+                    score = score - 0.05
             if (previous_price >= last_price) and (type_of_trade == 's'):
                 score = score + 0.01
             if (previous_price < last_price) and (type_of_trade == 'b'):
                 score = score + 0.01
             if (previous_price < last_price) and (type_of_trade == 's'):
                 if score > 0:
-                    score = score - 0.01
+                    score = score - 0.05
             debug("### score calc "+ str(model_score_column) +\
                   ": current score = " + str(score))
 
